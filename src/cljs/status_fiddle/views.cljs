@@ -5,5 +5,5 @@
 
 (defn main-panel []
   (let [name (re-frame/subscribe [::subs/name])]
-    [react/view]))
-     ;[react/text "Hello from "]]))
+    [react/view
+     [react/text "Hello from "]]))

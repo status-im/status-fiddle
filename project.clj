@@ -1,7 +1,7 @@
 (defproject status-fiddle "0.1.0-SNAPSHOT"
   :dependencies [[org.clojure/clojure "1.8.0"]
                  [org.clojure/clojurescript "1.9.908"]
-                 [reagent "0.7.0"]
+                 [reagent "0.7.0" :exclusions [cljsjs/react cljsjs/react-dom]]
                  [re-frame "0.10.2"]]
 
   :plugins [[lein-cljsbuild "1.1.5"]]
@@ -31,13 +31,11 @@
                     :output-dir           "resources/public/js/compiled/out"
                     :asset-path           "js/compiled/out"
                     :source-map-timestamp true
-                    :install-deps         true
-                    :npm-deps             {:react            "15.6.1"
-                                           :react-dom        "15.6.1"
-                                           :react-native-web "0.0.100"}
                     :preloads             [devtools.preload
                                            re-frisk.preload]
-                    :external-config      {:devtools/config {:features-to-install :all}}}}
+                    :external-config      {:devtools/config {:features-to-install :all}}
+                    :foreign-libs         [{:file "resources/public/js/bundle.js"
+                                            :provides ["cljsjs.react" "cljsjs.react.dom" "webpack.bundle"]}]}}
 
 
     {:id           "min"
