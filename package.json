@@ -1,0 +1,16 @@
+{
+  "name": "status-fiddle",
+  "version": "0.0.1",
+  "scripts": {
+    "watch": "webpack -d --watch",
+    "build": "webpack -p"
+  },
+  "dependencies": {
+    "react": "^16.2.0",
+    "react-dom": "^16.2.0",
+    "react-native-web": "^0.3.0-rc.4"
+  },
+  "devDependencies": {
+    "webpack": "^3.10.0"
+  }
+}
