@@ -7,11 +7,19 @@ Online UI editor for status-react
 ### Run application:
 
 ```
-lein clean
-lein figwheel dev
+lein figwheel-repl
 ```
 
 Figwheel will automatically push cljs changes to the browser.
 
 Wait a bit, then browse to [http://localhost:3449](http://localhost:3449).
 
+## Production Mode
+
+### Build CLJS:
+
+```
+lein build-prod
+```
+
+Open `resources/public/index.html` in the browser.
