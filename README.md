@@ -2,6 +2,15 @@
 
 Online UI editor for status-react
 
+## Setup
+
+### Installation:
+
+```
+npm install
+npm run build
+```
+
 ## Development Mode
 
 ### Run application:
