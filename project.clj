@@ -34,8 +34,13 @@
 
   :cljsbuild
   {:builds
-   {:app {:source-paths ["src/cljs"]
+   {:app {:source-paths            ["src/cljs"]
           :compiler {:main         status-fiddle.core
                      :output-to    "resources/public/js/compiled/app.js"
                      :foreign-libs [{:file "resources/public/js/bundle.js"
-                                     :provides ["cljsjs.react" "cljsjs.react.dom" "webpack.bundle"]}]}}}})
+                                     :provides ["cljsjs.react" "cljsjs.react.dom" "webpack.bundle"]}]}}}}
+
+  :aliases {"figwheel-repl" ["with-profile" "dev" "figwheel"]
+            "build-prod"    ["do"
+                             ["clean"]
+                             ["with-profile" "prod" "cljsbuild" "once"]]})
