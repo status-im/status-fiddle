@@ -6,4 +6,7 @@
 (defn main-panel []
   (let [name (re-frame/subscribe [::subs/name])]
     [react/view
-     [react/text "Hello from "]]))
+     [:meta {:http-equiv "Content-Type" :content "text/html; charset=UTF-8"}]
+     [:link {:rel "stylesheet" :type "text/css" :href "https://storage.googleapis.com/app.klipse.tech/css/codemirror.css"}]
+     [:link {:rel "stylesheet" :type "text/css" :href "css/theme.css"}]
+     [:pre [:code {:class "language-klipse"} "(map inc [1 2 3])"]]]))
