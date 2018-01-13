@@ -2,12 +2,30 @@
 <html lang="en">
   <head>
     <meta charset='utf-8'>
-    
-    
+    <meta content="ie=edge" http-equiv="x-ua-compatible" />
+    <title>Fiddle</title>
+    <meta content="width=device-width, initial-scale=1" name="viewport" />
+    <link href="apple-touch-icon.png" rel="apple-touch-icon" />
+    <link href="https://fonts.googleapis.com/css?family=Open+Sans:400,300,600|Droid+Sans+Mono" rel="stylesheet" />
+    <link href="css/normalize-3.0.3.css" rel="stylesheet" />
+    <link href="css/semantic.min.css"   rel="stylesheet" type="text/css" media="screen" />
+    <link href="css/codemirror.min.css" rel="stylesheet" type="text/css" media="screen" />
+    <link href="css/theme.css"          rel="stylesheet" type="text/css" media="screen" />
+    <link href="css/style.css"          rel="stylesheet" type="text/css" media="screen" />
   </head>
   <body>
     <div id="app"></div>
-    <script src="js/compiled/app.js"></script>
+
+    <!-- load js -->
+    <script type="text/javascript" src="js/jquery.min.js"></script>
+    <script type="text/javascript" src="js/semantic.min.js"></script>
+    <script src="codemirror/lib/codemirror.js"></script>
+    <script src="codemirror/addon/selection/active-line.js"></script>
+    <script src="codemirror/addon/edit/matchbrackets.js"></script>
+    <script src="codemirror/mode/clojure/clojure.js"></script>
+    <script src="codemirror/mode/clojure/clojure-parinfer.js"></script>
+
+    <script type="text/javascript" src="js/compiled/app.js"></script>
     <script>status_fiddle.core.init();</script>
   </body>
 </html>

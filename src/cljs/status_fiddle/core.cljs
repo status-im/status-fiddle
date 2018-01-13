@@ -9,6 +9,7 @@
 (defn dev-setup []
   (when config/debug?
     (enable-console-print!)
+    (set! js/COMPILED true)
     (println "dev mode")))
 
 (defn mount-root []
