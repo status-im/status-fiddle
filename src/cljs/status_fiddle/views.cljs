@@ -10,21 +10,15 @@
 (defn code-mirror []
   (reagent/create-class
     {:reagent-render      (fn [] [:div
-                                  {:style {:border "1px solid #9A9A9A"}}
+                                  {:style {:border "1px solid #9A9A9A" :display "inline-block"}}
                                   [:textarea#codezone {:auto-focus    true
                                                        :default-value @(re-frame/subscribe [:text])}]])
      :component-did-mount (fn [_]
                             (et/create-editor! "codezone" :codemirror-box)
                             (start-editor-sync!))}))
 
-(defn cljs-pane []
-  [:div.seven.wide.column
-   [:div.ui.form
-    [code-mirror]]])
-
 (defn dom-pane []
-  [:div.seven.wide.column
-   [:div#baby-dom-target {:style {:font-size "1.3em"}}
+  [:div {:style {:display "inline-block"}}
     (let [cljs-string @(re-frame/subscribe [:text])]
       (eval-str (empty-state)
                 (str "(ns cljs.user
@@ -47,17 +41,10 @@
                       (def *er x)
                       (js/console.error
                         "Error: " (str error)))
-                    value))))]])
+                    value))))])
 
 (defn main-panel []
-  (let [name (re-frame/subscribe [::subs/name])]
-    [react/view
-     [:div {:style {:width "100%" :height "100%"}}
-      [:div.ui.fluid.container
-       {:style {:padding          "20px"
-                :min-height       "100%"
-                :background-color "#fff"}}
-       [:div.ui.grid
-        [:div.row
-         [cljs-pane]
-         [dom-pane]]]]]]))
+  [react/view
+   [:div
+    [code-mirror]
+    [dom-pane]]])
