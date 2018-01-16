@@ -1,7 +1,6 @@
 (defproject status-fiddle "0.1.0-SNAPSHOT"
   :dependencies [[org.clojure/clojure "1.8.0"]
                  [org.clojure/clojurescript "1.9.908"]
-                 [parinfer                  "0.2.3"]
                  [reagent "0.7.0" :exclusions [cljsjs/react cljsjs/react-dom]]
                  [re-frame "0.10.2"]]
 
@@ -37,7 +36,6 @@
   {:builds
    {:app {:source-paths            ["src/cljs"]
           :compiler {:main         status-fiddle.core
-                     :source-map   true
                      :output-to    "resources/public/js/compiled/app.js"
                      :foreign-libs [{:file "resources/public/js/bundle.js"
                                      :provides ["cljsjs.react" "cljsjs.react.dom" "webpack.bundle"]}]}}}}

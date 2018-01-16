@@ -2,6 +2,4 @@
 
 (def default-db
   {:text "[:h1 \"Hello World!\"]" ;; text of the editor
-   :mode :indent-mode             ;; editor mode (:indent-mode, :paren-mode)
-   :cm nil                        ;; the CodeMirror instance
-   :watcher nil})                 ;; the ScrollMonitor instance
+   :mode :indent-mode})           ;; editor mode (:indent-mode, :paren-mode)
