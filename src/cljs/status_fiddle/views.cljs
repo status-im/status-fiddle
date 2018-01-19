@@ -14,30 +14,38 @@
                               (.setValue cm @(re-frame/subscribe [:text]))
                               (.on cm "change" #(re-frame/dispatch [:update-text (.getValue cm)]))))}))
 
+(defn valid-hiccup? [vec]
+  (cond
+    (not (vector? vec)) false
+    (not (pos? (count vec)))false
+    (not (reagent.impl.template/valid-tag? (nth vec 0 nil))) false
+    (not (every? true? (map valid-hiccup?(filter vector? vec)))) false
+    :else true))
+
 (defn dom-pane []
   [:div#result-panel
-   (let [cljs-string @(re-frame/subscribe [:text])]
-     (eval-str (empty-state)
-               (str "(ns cljs.user
+   (let [cljs-string @(re-frame/subscribe [:text])
+         compiled-hic (eval-str (empty-state)
+                                (str "(ns cljs.user
                     (:refer-clojure :exclude [atom])
                     (:require reagent.core [status-fiddle.react-native-web :as react]))
-                  (def atom reagent.core/atom)"
-                    (or (not-empty cljs-string)
-                        "[:div]"))
-               'dummy-symbol
-               {:ns            'cljs.user
-                :eval          js-eval
-                :static-fns    true
-                :def-emits-var false
-                :load          (fn [name cb] (cb {:lang :clj :source ""}))
-                :context       :statement}
-               (fn [{:keys [error value] :as x}]
-                 (if error
-                   (do
-                     (def *er x)
-                     (js/console.error
-                       "Error: " (str error)))
-                   value))))])
+                    (def atom reagent.core/atom)"
+                                     (or (not-empty cljs-string)
+                                         "[:div]"))
+                                'dummy-symbol
+                                {:ns            'cljs.user
+                                 :eval          js-eval
+                                 :static-fns    true
+                                 :def-emits-var false
+                                 :load          (fn [name cb] (cb {:lang :clj :source ""}))
+                                 :context       :statement}
+                                (fn [{:keys [error value] :as x}]
+                                  (if error
+                                    (do
+                                      (def *er x)
+                                      (js/console.error "Error: " (str error)))
+                                    value)))]
+     (if (valid-hiccup? compiled-hic) compiled-hic "Please check your Hiccup expressions!"))])
 
 (defn main-panel []
   [react/view {:style {:flex-direction :row :padding-vertical 50}}
