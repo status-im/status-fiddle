@@ -28,15 +28,16 @@
                                                                     re-frisk.preload]
                                              :external-config      {:devtools/config {:features-to-install :all}}}}}}}
    :prod
-   {:cljsbuild    {:builds {:app {:compiler {:pretty-print    false}}}}}}
+   {:cljsbuild {:builds {:app {:compiler {:optimizations :simple
+                                          :pretty-print  false}}}}}}
 
   :cljsbuild
   {:builds
-   {:app {:source-paths            ["src/cljs"]
-          :compiler {:main         status-fiddle.core
-                     :output-to    "resources/public/js/compiled/app.js"
-                     :foreign-libs [{:file "resources/public/js/bundle.js"
-                                     :provides ["cljsjs.react" "cljsjs.react.dom" "webpack.bundle"]}]}}}}
+   {:app {:source-paths ["src/cljs"]
+          :compiler     {:main         status-fiddle.core
+                         :output-to    "resources/public/js/compiled/app.js"
+                         :foreign-libs [{:file     "resources/public/js/bundle.js"
+                                         :provides ["cljsjs.react" "cljsjs.react.dom" "webpack.bundle"]}]}}}}
 
   :aliases {"figwheel-repl" ["with-profile" "dev" "figwheel"]
             "build-prod"    ["do"

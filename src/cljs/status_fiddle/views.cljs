@@ -25,43 +25,47 @@
       (not (every? true? (map valid-hiccup? (filter vector? vec)))) false
       :else true)))
 
+(defn compiler []
+  (let [cljs-string @(re-frame/subscribe [:source])
+        compiled-hic (eval-str (empty-state)
+                               (str "(ns cljs.user
+                          (:refer-clojure :exclude [atom])
+                          (:require reagent.core [status-fiddle.react-native-web :as react]))
+                          (def atom reagent.core/atom)"
+                                    (or (not-empty cljs-string)
+                                        "[:div]"))
+                               'dummy-symbol
+                               {:ns            'cljs.user
+                                :eval          js-eval
+                                :static-fns    true
+                                :def-emits-var false
+                                :load          (fn [name cb] (cb {:lang :clj :source ""}))
+                                :context       :statement}
+                               (fn [{:keys [error value] :as x}]
+                                 (if error
+                                   (do
+                                     (def *er x)
+                                     (js/console.error "Error: " (str error)))
+                                   value)))]
+    (if (valid-hiccup? compiled-hic)
+      (do
+        (re-frame/dispatch [:update-result compiled-hic])
+        (re-frame/dispatch [:delete-error-message]))
+      (re-frame/dispatch [:set-error "Hiccup expression is invalid"]))))
+
 (defn dom-pane []
   (let [result (re-frame/subscribe [:result])]
-    [react/view {:style {:flex 1}}
-      (let [cljs-string (re-frame/subscribe [:source])
-            compiled-hic (eval-str (empty-state)
-                                   (str "(ns cljs.user
-                      (:refer-clojure :exclude [atom])
-                      (:require reagent.core [status-fiddle.react-native-web :as react]))
-                      (def atom reagent.core/atom)"
-                                        (or (not-empty @cljs-string)
-                                            "[:div]"))
-                                   'dummy-symbol
-                                   {:ns            'cljs.user
-                                    :eval          js-eval
-                                    :static-fns    true
-                                    :def-emits-var false
-                                    :load          (fn [name cb] (cb {:lang :clj :source ""}))
-                                    :context       :statement}
-                                   (fn [{:keys [error value] :as x}]
-                                     (if error
-                                       (do
-                                         (def *er x)
-                                         (js/console.error "Error: " (str error)))
-                                       value)))]
-        (if (valid-hiccup? compiled-hic)
-          (do
-            (re-frame/dispatch [:update-result compiled-hic])
-            (re-frame/dispatch [:delete-error-message]))
-          (re-frame/dispatch [:set-error "Hiccup expression is invalid"])))
-     @result]))
+    (fn []
+      [react/view {:style {:flex 1}}
+       @result])))
 
 (defn error-view []
-  (let [error (re-frame/subscribe [:error])]
-     [react/text {:style {:color :red}} @error]))
+  (let [error @(re-frame/subscribe [:error])]
+     [react/text {:style {:color :red}} error]))
 
 (defn main-panel []
   [react/view {:style {:flex-direction :row :padding-vertical 50}}
+   [compiler]
    [react/view {:style {:flex 1 :padding-horizontal 50}}
     [code-mirror]]
    [react/view {:style {:padding-horizontal 50}}
