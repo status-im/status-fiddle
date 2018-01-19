@@ -8,23 +8,26 @@
 (defn code-mirror []
   (reagent/create-class
     {:reagent-render      (fn []
-                            [:div#code-panel])
+                            [:div#code-pane])
      :component-did-mount (fn [_]
-                            (let [cm (js/CodeMirror (.getElementById js/document "code-panel"))]
-                              (.setValue cm @(re-frame/subscribe [:text]))
-                              (.on cm "change" #(re-frame/dispatch [:update-text (.getValue cm)]))))}))
+                            (let [cm (js/CodeMirror (.getElementById js/document "code-pane"))]
+                              (.init js/parinferCodeMirror cm)
+                              (.setValue cm @(re-frame/subscribe [:source]))
+                              (.on cm "change" #(re-frame/dispatch [:update-source (.getValue cm)]))))}))
 
 (defn valid-hiccup? [vec]
   (cond
     (not (vector? vec)) false
     (not (pos? (count vec)))false
+    (not (keyword? (nth vec 0 nil))) false
     (not (reagent.impl.template/valid-tag? (nth vec 0 nil))) false
     (not (every? true? (map valid-hiccup?(filter vector? vec)))) false
     :else true))
 
 (defn dom-pane []
-  [:div#result-panel
-   (let [cljs-string @(re-frame/subscribe [:text])
+  [:div
+   [:div
+   (let [cljs-string @(re-frame/subscribe [:source])
          compiled-hic (eval-str (empty-state)
                                 (str "(ns cljs.user
                     (:refer-clojure :exclude [atom])
@@ -45,7 +48,16 @@
                                       (def *er x)
                                       (js/console.error "Error: " (str error)))
                                     value)))]
-     (if (valid-hiccup? compiled-hic) compiled-hic "Please check your Hiccup expressions!"))])
+     ;[:div#result-pane @(re-frame/subscribe [:result])]
+     ;[:div#error-pane @(re-frame/subscribe [:error])]
+     (if (valid-hiccup? compiled-hic)
+       (do
+         (re-frame/dispatch [:update-result compiled-hic])
+         (re-frame/dispatch [:delete-error-message]))
+       (re-frame/dispatch [:set-error "Please check your Hiccup expressions!"])))]
+       [:div#result-pane @(re-frame/subscribe [:result])]
+       [:div#error-pane {:style {:color "red"}}@(re-frame/subscribe [:error])]]
+  )
 
 (defn main-panel []
   [react/view {:style {:flex-direction :row :padding-vertical 50}}
