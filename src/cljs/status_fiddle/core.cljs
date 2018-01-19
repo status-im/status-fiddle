@@ -5,6 +5,7 @@
             [status-fiddle.views :as views]
             [status-fiddle.config :as config]))
 
+(set! js/COMPILED true)
 
 (defn dev-setup []
   (when config/debug?
