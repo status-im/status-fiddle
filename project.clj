@@ -28,7 +28,7 @@
                                                                     re-frisk.preload]
                                              :external-config      {:devtools/config {:features-to-install :all}}}}}}}
    :prod
-   {:cljsbuild {:builds {:app {:compiler {:optimizations :simple
+   {:cljsbuild {:builds {:app {:compiler {:optimizations :whitespace
                                           :pretty-print  false}}}}}}
 
   :cljsbuild
