@@ -16,13 +16,14 @@
                               (.on cm "change" #(re-frame/dispatch [:update-source (.getValue cm)]))))}))
 
 (defn valid-hiccup? [vec]
-  (cond
-    (not (vector? vec)) false
-    (not (pos? (count vec)))false
-    (not (keyword? (nth vec 0 nil))) false
-    (not (reagent.impl.template/valid-tag? (nth vec 0 nil))) false
-    (not (every? true? (map valid-hiccup?(filter vector? vec)))) false
-    :else true))
+  (let [first-element (nth vec 0 nil)]
+    (cond
+      (not (vector? vec)) false
+      (not (pos? (count vec))) false
+      (string? first-element) false
+      (not (reagent.impl.template/valid-tag? first-element)) false
+      (not (every? true? (map valid-hiccup? (filter vector? vec)))) false
+      :else true)))
 
 (defn dom-pane []
   [:div
