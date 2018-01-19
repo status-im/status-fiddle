@@ -1,1 +1,7 @@
-# Created by .ignore support plugin (hsz.mobi)
+.idea/
+figwheel_server.log
+*.iml
+target/
+node_modules/
+resources/public/js/
+.lein-repl-history
