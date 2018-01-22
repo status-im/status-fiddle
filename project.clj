@@ -2,6 +2,8 @@
   :dependencies [[org.clojure/clojure "1.8.0"]
                  [org.clojure/clojurescript "1.9.908"]
                  [reagent "0.7.0" :exclusions [cljsjs/react cljsjs/react-dom]]
+                 [hickory "0.7.1"]
+                 [com.taoensso/timbre "4.10.0"]
                  [re-frame "0.10.2"]]
 
   :plugins [[lein-cljsbuild "1.1.5"]]

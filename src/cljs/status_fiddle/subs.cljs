@@ -12,6 +12,16 @@
     (:result db)))
 
 (re-frame/reg-sub
+  :color
+  (fn [db]
+    (:color db)))
+
+(re-frame/reg-sub
+  :icon
+  (fn [db]
+    (:icon db)))
+
+(re-frame/reg-sub
   :error
   (fn [db]
     (:error db)))

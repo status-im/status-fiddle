@@ -4,6 +4,29 @@ Online UI editor for status-react
 
 ## Setup
 
+Checkout `https://github.com/status-im/status-react` into `status-react` folder 
+
+You should have `status-react` and `status-fiddle` in the same directory
+
+```
++-- status-dev-folder
+|   +-- status-react // status-react repo 
+|   +-- status-fiddle // this repo
+
+```
+
+Make simlink to icons  
+
+```
+ln -s /Users/*/status-dev-folder/status-react/resources/icons /Users/*/status-dev-folder/status-fiddle/resources/icons
+```
+
+Make simlink to components  
+
+```
+ln -s /Users/*/status-dev-folder/status-react/src/status_im/ui/components /Users/*/status-dev-folder/status-fiddle/cljs/status_im/ui/components
+```
+
 ### Installation:
 
 ```

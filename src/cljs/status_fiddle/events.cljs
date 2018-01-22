@@ -26,3 +26,13 @@
   :set-error
   (fn [state [_ new-error]]
     (assoc-in state [:error] new-error)))
+
+(re-frame/reg-event-db
+  :show-color
+  (fn [state [_ color label]]
+    (assoc-in state [:color] {:color color :label label})))
+
+(re-frame/reg-event-db
+  :show-icon
+  (fn [state [_ icon]]
+    (assoc-in state [:icon] icon)))
