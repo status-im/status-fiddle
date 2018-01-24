@@ -1,6 +1,7 @@
 (ns status-fiddle.events
   (:require [re-frame.core :as re-frame]
-            [status-fiddle.db :as db]))
+            [status-fiddle.db :as db]
+            [status-fiddle.local-storage :as local-storage]))
 
 (re-frame/reg-event-db
  ::initialize-db
@@ -8,9 +9,32 @@
    db/default-db))
 
 (re-frame/reg-event-db
+  :load-default-template
+  (fn [state _]
+    (assoc-in state [:source] db/default-template)))
+
+(re-frame/reg-event-db
   :update-source
   (fn [state [_ new-text]]
     (assoc-in state [:source] new-text)))
+
+(re-frame/reg-event-db
+  :set-cm
+  (fn [state [_ cm]]
+    (assoc-in state [:cm] cm)))
+
+(re-frame/reg-event-db
+  :load-source
+  (fn [state [_ new-text]]
+    (let [cm (:cm state)]
+      (when cm (.setValue cm new-text))
+      (assoc-in state [:source] new-text))))
+
+(re-frame/reg-event-db
+  :save-the-source
+  (fn [state _]
+    (local-storage/save-to-local-storage (:source state))
+    state))
 
 (re-frame/reg-event-db
   :update-result
