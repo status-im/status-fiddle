@@ -2,6 +2,7 @@
   (:require [re-frame.core :as re-frame]
             [reagent.core :as reagent]
             [cljs.js :refer [eval-str empty-state js-eval]]
+            [status-fiddle.gist :as gist]
             [status-fiddle.subs :as subs]
             [status-fiddle.react-native-web :as react]
             [status-fiddle.icons :as icons]
@@ -13,6 +14,7 @@
                             [:div#code-pane])
      :component-did-mount (fn [_]
                             (let [cm (js/CodeMirror (.getElementById js/document "code-pane"))]
+                              (re-frame/dispatch [:set-cm cm])
                               (.init js/parinferCodeMirror cm)
                               (.setValue cm @(re-frame/subscribe [:source]))
                               (.on cm "change" #(re-frame/dispatch [:update-source (.getValue cm)]))))}))
@@ -52,8 +54,13 @@
     (if (valid-hiccup? compiled-hic)
       (do
         (re-frame/dispatch [:update-result compiled-hic])
+        (re-frame/dispatch [:save-the-source])
         (re-frame/dispatch [:delete-error-message]))
       (re-frame/dispatch [:set-error "Hiccup expression is invalid"]))))
+
+(defn save-panel []
+  [react/view {:style {:flex-direction :row}}
+   [:button {:type "button" :on-click (fn [e] (gist/save @(re-frame/subscribe [:source])))} "save!"]])
 
 (defn dom-pane []
   (let [result (re-frame/subscribe [:result])]
@@ -173,6 +180,7 @@
   [react/view {:style {:padding 50}}
    [colors-panel]
    [icons-panel]
+   [save-panel]
    [react/view {:style {:flex-direction :row}}
     [compiler]
     [react/view {:style {:flex 1}}
