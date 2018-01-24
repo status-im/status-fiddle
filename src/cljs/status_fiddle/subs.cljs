@@ -27,3 +27,13 @@
     (:error db)))
 
 (re-frame/reg-sub :url :url)
+
+(re-frame/reg-sub
+  :screen-width
+  (fn [db]
+    (:screen-width db)))
+
+(re-frame/reg-sub
+  :screen-height
+  (fn [db]
+    (:screen-height db)))

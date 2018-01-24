@@ -72,3 +72,8 @@
   :set-url
   (fn [state [_ url]]
     (assoc state :url url)))
+
+(re-frame/reg-event-db
+  :switch-phone
+  (fn [state [_ phone]]
+    (merge state (select-keys phone [:phone-name :screen-width :screen-height]))))
