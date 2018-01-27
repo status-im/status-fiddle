@@ -1,6 +1,5 @@
 (ns status-im.utils.platform
-  (:require [re-frame.core :as re-frame]
-            [status-fiddle.db :as db]))
+  (:require [status-fiddle.db :as db]))
 
 (defn platform [] @db/current-os)
 
