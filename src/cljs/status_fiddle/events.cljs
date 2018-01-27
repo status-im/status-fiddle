@@ -76,4 +76,4 @@
 (re-frame/reg-event-db
   :switch-phone
   (fn [state [_ phone]]
-    (merge state (select-keys phone [:phone-name :screen-width :screen-height]))))
+    (merge state (select-keys phone [:phone-name :screen-width :screen-height :os]))))

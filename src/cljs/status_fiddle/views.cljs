@@ -37,7 +37,7 @@
         compiled-hic (eval-str (empty-state)
                                (str "(ns cljs.user
                           (:refer-clojure :exclude [atom])
-                          (:require reagent.core [status-fiddle.react-native-web :as react] [status-fiddle.icons :as icons] [status-im.ui.components.styles :as styles]))
+                          (:require reagent.core [status-im.utils.platform :as platform] [status-fiddle.react-native-web :as react] [status-fiddle.icons :as icons] [status-im.ui.components.styles :as styles]))
                           (def atom reagent.core/atom)"
                                     (or (not-empty cljs-string)
                                         "[:div]"))
