@@ -37,3 +37,8 @@
   :screen-height
   (fn [db]
     (:screen-height db)))
+
+(re-frame/reg-sub
+  :current-os
+  (fn [db]
+    (:os db)))
