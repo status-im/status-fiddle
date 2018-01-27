@@ -17,6 +17,7 @@
                                (re-frame/dispatch [:load-source response-text])))}))
 
 (defn set-url [url]
+  (re-frame/dispatch [:set-url url])
   (set! (.-location js/window) url))
 
 (defn current-url []

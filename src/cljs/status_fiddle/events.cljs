@@ -1,7 +1,8 @@
 (ns status-fiddle.events
   (:require [re-frame.core :as re-frame]
             [status-fiddle.db :as db]
-            [status-fiddle.local-storage :as local-storage]))
+            [status-fiddle.local-storage :as local-storage]
+            [status-fiddle.gist :as gist]))
 
 (re-frame/reg-event-db
  ::initialize-db
@@ -60,3 +61,14 @@
   :show-icon
   (fn [state [_ icon]]
     (assoc-in state [:icon] icon)))
+
+(re-frame/reg-event-fx
+  :share-source-on-gist
+  (fn [{db :db}]
+    (gist/save (:source db))
+    {:db (assoc db :url "Uploading on gist...")}))
+
+(re-frame/reg-event-db
+  :set-url
+  (fn [state [_ url]]
+    (assoc state :url url)))

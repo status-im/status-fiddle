@@ -25,3 +25,5 @@
   :error
   (fn [db]
     (:error db)))
+
+(re-frame/reg-sub :url :url)
