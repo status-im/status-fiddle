@@ -34,6 +34,7 @@
 
 (defn compiler []
   (let [cljs-string @(re-frame/subscribe [:source])
+        os @(re-frame/subscribe [:current-os])
         compiled-hic (eval-str (empty-state)
                                (str "(ns cljs.user
                           (:refer-clojure :exclude [atom])
