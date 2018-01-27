@@ -1,10 +1,11 @@
 (ns status-im.utils.platform
-  (:require [re-frame.core :as re-frame]))
+  (:require [re-frame.core :as re-frame]
+            [status-fiddle.db :as db]))
 
-(def platform @(re-frame/subscribe [:current-os]))
+(defn platform [] @db/current-os)
 
-(def android? (= platform "android"))
-(def ios? (= platform "ios"))
+(defn android? [] (= @db/current-os "android"))
+(defn ios? [] (= @db/current-os "ios"))
 
 (def platform-specific
   (cond
