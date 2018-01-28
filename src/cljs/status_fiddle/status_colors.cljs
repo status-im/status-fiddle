@@ -1,4 +1,5 @@
 (ns status-fiddle.status-colors
+  (:require-macros [status-im.utils.views :refer [defview letsubs]])
   (:require [status-fiddle.react-native-web :as react]
             [status-im.ui.components.styles :as styles]
             [re-frame.core :as re-frame]))
@@ -7,8 +8,8 @@
   [react/touchable-highlight {:on-press #(re-frame/dispatch [:show-color color label])}
    [react/view {:style {:width 20 :height 20 :background-color color}}]])
 
-(defn color-label []
-  (let [{:keys [color label]} @(re-frame/subscribe [:color])]
+(defview color-label []
+  (letsubs [{:keys [color label]} [:get :color]]
     [react/view {:style {:flex-direction :row}}
      [react/view {:style {:width 20 :height 20 :background-color color}}]
      [react/text {:style {:margin-left 20}} color]

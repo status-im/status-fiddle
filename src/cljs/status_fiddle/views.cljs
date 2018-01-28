@@ -1,4 +1,5 @@
 (ns status-fiddle.views
+  (:require-macros [status-im.utils.views :refer [defview letsubs]])
   (:require [re-frame.core :as re-frame]
             [reagent.core :as reagent]
             [cljs.js :refer [eval-str empty-state js-eval]]
@@ -19,7 +20,7 @@
                             (let [cm (js/CodeMirror (.getElementById js/document "code-pane"))]
                               (re-frame/dispatch [:set-cm cm])
                               (.init js/parinferCodeMirror cm)
-                              (.setValue cm @(re-frame/subscribe [:source]))
+                              (.setValue cm @(re-frame/subscribe [:get :source]))
                               (.on cm "change" #(re-frame/dispatch [:update-source (.getValue cm)]))))}))
 
 (defn valid-hiccup? [vec]
@@ -33,15 +34,23 @@
       :else true)))
 
 (defn compiler []
-  (let [cljs-string @(re-frame/subscribe [:source])
-        os @(re-frame/subscribe [:current-os])
+  (let [cljs-string @(re-frame/subscribe [:get :source])
+        os @(re-frame/subscribe [:get :os])
         compiled-hic (eval-str (empty-state)
-                               (str "(ns cljs.user
-                          (:refer-clojure :exclude [atom])
-                          (:require reagent.core [status-im.utils.platform :as platform] [status-fiddle.react-native-web :as react] [status-fiddle.icons :as icons] [status-im.ui.components.styles :as styles]))
-                          (def atom reagent.core/atom)"
-                                    (or (not-empty cljs-string)
-                                        "[:div]"))
+                               (str
+                                 "(ns cljs.platform)
+                                  (def platform \"" os "\")
+                                  (def android? " (= os "android") ")"
+                                 "(def ios? " (= os "ios") ")"
+
+                                 "(ns cljs.user
+                            (:require reagent.core
+                                      [cljs.platform :as platform]
+                                      [status-fiddle.react-native-web :as react]
+                                      [status-fiddle.icons :as icons]
+                                      [status-im.ui.components.styles :as styles]))"
+                                 (or (not-empty cljs-string)
+                                     "[:div]"))
                                'dummy-symbol
                                {:ns            'cljs.user
                                 :eval          js-eval
@@ -62,47 +71,52 @@
         (re-frame/dispatch [:delete-error-message]))
       (re-frame/dispatch [:set-error "Hiccup expression is invalid"]))))
 
-(defn share-panel []
-  [react/view {:style {:flex-direction :row :justify-content :flex-end}}
-   [react/text @(re-frame/subscribe [:url])]
-   [react/touchable-highlight {:on-press #(re-frame/dispatch [:share-source-on-gist])}
-    [react/view {:style {:background-color styles/color-light-blue :border-radius 8 :padding-horizontal 10 :padding-vertical 2
-                         :margin-bottom 2 :margin-left 10}}
-     [react/text {:style {:color :white :font-size 11}}
-      "Share"]]]])
+(defview share-panel []
+  (letsubs [url [:get :url]]
+    [react/view {:style {:flex-direction :row :justify-content :flex-end}}
+     [react/text url]
+     [react/touchable-highlight {:on-press #(re-frame/dispatch [:share-source-on-gist])}
+      [react/view {:style {:background-color styles/color-light-blue :border-radius 8 :padding-horizontal 10 :padding-vertical 2
+                           :margin-bottom    2 :margin-left 10}}
+       [react/text {:style {:color :white :font-size 11}}
+        "Share"]]]]))
 
-(defn dom-pane []
-  (let [result (re-frame/subscribe [:result])]
-    (fn []
-      [react/view {:style {:flex 1}}
-       @result])))
+(defview dom-pane []
+  (letsubs [result [:get :result]]
+    [react/view {:style {:flex 1}}
+     result]))
 
-(defn error-view []
-  (let [error @(re-frame/subscribe [:error])]
-     [react/text {:style {:color :red}} error]))
+(defview error-view []
+  (letsubs [error [:get :error]]
+    [react/text {:style {:color :red}} error]))
 
-(defn phone-chooser []
+(defn device-chooser []
   [:select
-   {:on-change #(let [phone (nth devices/devices (js/parseInt (.. % -target -value)))]
-                  (re-frame/dispatch [:switch-phone phone]))}
+   {:on-change #(let [device (nth devices/devices (js/parseInt (.. % -target -value)))]
+                  (re-frame/dispatch [:switch-device device]))}
    (map
-     (fn [phone] [:option {:value (:id phone)} (:phone-name phone)])
+     (fn [device]
+       [:option {:value (:id device)} (:phone-name device)])
      devices/devices)])
 
-(defn main-panel []
-  [react/view {:style {:padding 50}}
-   [status-colors/colors-panel]
-   [status-icons/icons-panel]
-   [react/view {:style {:flex-direction :row}}
-    [react/view {:style {:flex 1}}
-     [compiler]
-     [share-panel]
-     [react/view {:style {:flex 1}}
-      [code-mirror]]]
-    [react/view {:style {:margin-left 50}}
-     [phone-chooser]
-     [react/view {:style {:width        @(re-frame/subscribe [:screen-width])
-                          :height       @(re-frame/subscribe [:screen-height])
-                          :border-width 1 :border-color :blue}}
-      [dom-pane]]
-     [error-view]]]])
+(defview main-panel []
+  (letsubs [screen-width [:get :screen-width]
+            screen-height [:get :screen-height]]
+    [react/view {:style {:padding 50}}
+     [status-colors/colors-panel]
+     [status-icons/icons-panel]
+     [react/view {:style {:flex-direction :row}}
+      [react/view {:style {:flex 1}}
+       [compiler]
+       [share-panel]
+       [react/view {:style {:flex 1}}
+        [code-mirror]]]
+      [react/view {:style {:margin-left 50}}
+       [react/view {:style {:margin-bottom 2}}
+        [device-chooser]]
+       [react/view {:style {:width        screen-width
+                            :height       screen-height
+                            :border-width 1
+                            :border-color :blue}}
+        [dom-pane]]
+       [error-view]]]]))

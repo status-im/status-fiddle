@@ -1,10 +1,9 @@
-(ns status-im.utils.platform
-  (:require [status-fiddle.db :as db]))
+(ns status-im.utils.platform)
 
-(defn platform [] @db/current-os)
+(def platform "ios")
 
-(defn android? [] (= @db/current-os "android"))
-(defn ios? [] (= @db/current-os "ios"))
+(def android? (= platform "android"))
+(def ios? (= platform "ios"))
 
 (def platform-specific
   (cond

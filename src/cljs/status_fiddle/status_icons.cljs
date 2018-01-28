@@ -1,4 +1,5 @@
 (ns status-fiddle.status-icons
+  (:require-macros [status-im.utils.views :refer [defview letsubs]])
   (:require [status-fiddle.react-native-web :as react]
             [re-frame.core :as re-frame]
             [status-fiddle.icons :as icons]))
@@ -8,8 +9,8 @@
   [react/touchable-highlight {:on-press #(re-frame/dispatch [:show-icon icon])}
    [icons/icon icon]])
 
-(defn icon-label []
-  (let [icon @(re-frame/subscribe [:icon])]
+(defview icon-label []
+  (letsubs [icon [:get :icon]]
     (when icon
       [react/view {:style {:flex-direction :row :align-items :center}}
        [icons/icon icon]

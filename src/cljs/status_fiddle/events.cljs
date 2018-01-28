@@ -11,56 +11,56 @@
 
 (re-frame/reg-event-db
   :load-default-template
-  (fn [state _]
-    (assoc-in state [:source] db/default-template)))
+  (fn [db _]
+    (assoc db :source db/default-template)))
 
 (re-frame/reg-event-db
   :update-source
-  (fn [state [_ new-text]]
-    (assoc-in state [:source] new-text)))
+  (fn [db [_ new-text]]
+    (assoc db :source new-text)))
 
 (re-frame/reg-event-db
   :set-cm
-  (fn [state [_ cm]]
-    (assoc-in state [:cm] cm)))
+  (fn [db [_ cm]]
+    (assoc db :cm cm)))
 
 (re-frame/reg-event-db
   :load-source
-  (fn [state [_ new-text]]
-    (let [cm (:cm state)]
+  (fn [db [_ new-text]]
+    (let [cm (:cm db)]
       (when cm (.setValue cm new-text))
-      (assoc-in state [:source] new-text))))
+      (assoc db :source new-text))))
 
-(re-frame/reg-event-db
+(re-frame/reg-event-fx
   :save-the-source
-  (fn [state _]
-    (local-storage/save-to-local-storage (:source state))
-    state))
+  (fn [{db :db} _]
+    (local-storage/save-to-local-storage (:source db))
+    nil))
 
 (re-frame/reg-event-db
   :update-result
-  (fn [state [_ new-result]]
-    (assoc-in state [:result] new-result)))
+  (fn [db [_ new-result]]
+    (assoc db :result new-result)))
 
 (re-frame/reg-event-db
   :delete-error-message
-  (fn [state _]
-    (dissoc state :error)))
+  (fn [db _]
+    (dissoc db :error)))
 
 (re-frame/reg-event-db
   :set-error
-  (fn [state [_ new-error]]
-    (assoc-in state [:error] new-error)))
+  (fn [db [_ new-error]]
+    (assoc db :error new-error)))
 
 (re-frame/reg-event-db
   :show-color
-  (fn [state [_ color label]]
-    (assoc-in state [:color] {:color color :label label})))
+  (fn [db [_ color label]]
+    (assoc db :color {:color color :label label})))
 
 (re-frame/reg-event-db
   :show-icon
-  (fn [state [_ icon]]
-    (assoc-in state [:icon] icon)))
+  (fn [db [_ icon]]
+    (assoc db :icon icon)))
 
 (re-frame/reg-event-fx
   :share-source-on-gist
@@ -70,11 +70,10 @@
 
 (re-frame/reg-event-db
   :set-url
-  (fn [state [_ url]]
-    (assoc state :url url)))
+  (fn [db [_ url]]
+    (assoc db :url url)))
 
 (re-frame/reg-event-db
-  :switch-phone
-  (fn [state [_ phone]]
-    (reset! db/current-os (:os phone))
-    (merge state (select-keys phone [:phone-name :screen-width :screen-height :os]))))
+  :switch-device
+  (fn [db [_ device]]
+    (merge db (select-keys device [:phone-name :screen-width :screen-height :os]))))
