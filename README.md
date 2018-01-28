@@ -1,6 +1,6 @@
 # status-fiddle
 
-Online UI editor for status-react
+Online UI editor for status-react https://status-im.github.io
 
 ## Setup
 
