@@ -14,6 +14,7 @@
             [status-fiddle.svg :as svg]
             [status-fiddle.css :as css]
             [status-fiddle.cheatsheet :as cheatsheet]))
+            [status-fiddle.toolbar :as toolbar]))
 
 (defn code-mirror []
   (reagent/create-class
@@ -51,7 +52,8 @@
                                       [cljs.platform :as platform]
                                       [status-fiddle.react-native-web :as react]
                                       [status-fiddle.icons :as icons]
-                                      [status-im.ui.components.styles :as styles]))"
+                                      [status-im.ui.components.styles :as styles]
+                                      [status-fiddle.toolbar :as toolbar]))"
                                  (or (not-empty cljs-string)
                                      "[:div]"))
                                'dummy-symbol
