@@ -10,7 +10,10 @@
             [status-fiddle.icons :as icons]
             [status-fiddle.status-colors :as status-colors]
             [status-fiddle.status-icons :as status-icons]
-            [status-im.ui.components.styles :as styles]))
+            [status-im.ui.components.styles :as styles]
+            [status-fiddle.svg :as svg]
+            [status-fiddle.css :as css]
+            [status-fiddle.cheatsheet :as cheatsheet]))
 
 (defn code-mirror []
   (reagent/create-class
@@ -71,15 +74,27 @@
         (re-frame/dispatch [:delete-error-message]))
       (re-frame/dispatch [:set-error "Hiccup expression is invalid"]))))
 
-(defview share-panel []
+(defn button [label on-press active?]
+  [react/touchable-highlight {:on-press on-press}
+   [react/view {:style {:background-color (if (or (nil? active?) active?)
+                                            styles/color-light-blue
+                                            styles/color-gray)
+                        :border-radius    4 :padding-horizontal 10 :padding-vertical 2
+                        :margin-bottom    2 :margin-left 10}}
+    [react/text {:style {:color :white :font-size 11}}
+     label]]])
+
+(defview buttons [colors icons svg css help]
   (letsubs [url [:get :url]]
-    [react/view {:style {:flex-direction :row :justify-content :flex-end}}
+    [react/view {:style {:flex-direction :row}}
+     [button "Colors" #(re-frame/dispatch [:set-in [:forms :colors] (not colors)]) (not colors)]
+     [button "Icons" #(re-frame/dispatch [:set-in [:forms :icons] (not icons)]) (not icons)]
+     [button "SVG" #(re-frame/dispatch [:set-in [:forms :svg] (not svg)]) (not svg)]
+     [button "CSS" #(re-frame/dispatch [:set-in [:forms :css] (not css)]) (not css)]
+     [button "Help" #(re-frame/dispatch [:set-in [:forms :help] (not help)]) (not help)]
+     [react/view {:style {:flex 1}}]
      [react/text url]
-     [react/touchable-highlight {:on-press #(re-frame/dispatch [:share-source-on-gist])}
-      [react/view {:style {:background-color styles/color-light-blue :border-radius 8 :padding-horizontal 10 :padding-vertical 2
-                           :margin-bottom    2 :margin-left 10}}
-       [react/text {:style {:color :white :font-size 11}}
-        "Share"]]]]))
+     [button "Share" #(re-frame/dispatch [:share-source-on-gist])]]))
 
 (defview dom-pane []
   (letsubs [result [:get :result]]
@@ -101,14 +116,23 @@
 
 (defview main-panel []
   (letsubs [screen-width [:get :screen-width]
-            screen-height [:get :screen-height]]
-    [react/view {:style {:padding 50}}
-     [status-colors/colors-panel]
-     [status-icons/icons-panel]
+            screen-height [:get :screen-height]
+            {:keys [colors icons svg css help]} [:get :forms]]
+    [react/view {:style {:padding 20}}
+     (when colors
+       [status-colors/colors-panel])
+     (when icons
+       [status-icons/icons-panel])
+     (when svg
+       [svg/svg])
+     (when css
+       [css/css])
+     (when help
+       [cheatsheet/cheatsheet])
      [react/view {:style {:flex-direction :row}}
       [react/view {:style {:flex 1}}
        [compiler]
-       [share-panel]
+       [buttons colors icons svg css help]
        [react/view {:style {:flex 1}}
         [code-mirror]]]
       [react/view {:style {:margin-left 50}}

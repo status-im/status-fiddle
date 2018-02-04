@@ -5,6 +5,16 @@
             [status-fiddle.gist :as gist]))
 
 (re-frame/reg-event-db
+  :set
+  (fn [db [_ k v]]
+    (assoc db k v)))
+
+(re-frame/reg-event-db
+  :set-in
+  (fn [db [_ path v]]
+    (assoc-in db path v)))
+
+(re-frame/reg-event-db
  ::initialize-db
  (fn  [_ _]
    db/default-db))
