@@ -2,7 +2,8 @@
   (:require [hickory.core :as hickory]
             [status-fiddle.react-native-web :as react]
             [status-fiddle.icons :as icons]
-            [reagent.core :as reagent]))
+            [reagent.core :as reagent]
+            [clojure.string :as string]))
 
 (defn svg []
   (let [svg-hiccup (reagent/atom "")]
@@ -16,7 +17,7 @@
                                          (reset! svg-hiccup (map hickory/as-hiccup (hickory/parse-fragment text)))))
                           :placeholder "Paste svg xml here"}]
        [icons/icon :icons/forward]
-       [react/text-input {:style {:flex 1 :height 200 :border-color :gray :border-width 1}
+       [react/text-input {:style     {:flex 1 :height 200 :border-color :gray :border-width 1}
                           :multiline true :textAlignVertical :top
-                          :editable false
-                          :value (str (first @svg-hiccup))}]])))
+                          :editable  false
+                          :value     (string/replace (str (first @svg-hiccup)) #"viewbox" "viewBox")}]])))
