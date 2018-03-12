@@ -24,7 +24,7 @@ ln -s /Users/*/status-dev-folder/status-react/resources/icons /Users/*/status-de
 Make simlink to components  
 
 ```
-ln -s /Users/*/status-dev-folder/status-react/src/status_im/ui/components /Users/*/status-dev-folder/status-fiddle/cljs/status_im/ui/components
+ln -s /Users/*/status-dev-folder/status-react/src/status_im/ui/components /Users/*/status-dev-folder/status-fiddle/src/cljs/status_im/ui/components
 ```
 
 ### Installation:

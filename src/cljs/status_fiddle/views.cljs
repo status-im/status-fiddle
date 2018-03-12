@@ -52,7 +52,7 @@
                                  "(def ios? " (= os "ios") ")"
 
                                  "(ns cljs.user
-                            (:require reagent.core
+                                    (:require reagent.core
                                       [cljs.platform :as platform]
                                       [status-fiddle.react-native-web :as react]
                                       [status-fiddle.icons :as icons]
