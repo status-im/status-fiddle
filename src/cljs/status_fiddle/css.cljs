@@ -3,7 +3,8 @@
             [status-fiddle.react-native-web :as react]
             [status-fiddle.icons :as icons]
             [reagent.core :as reagent]
-            [clojure.string :refer [split trim] :as str]))
+            [clojure.string :refer [split trim] :as str]
+            [status-fiddle.status-colors :as status-colors]))
 
 ;; TODO: Perhaps make configurable or passed in as options to relevant fns
 (def ^:dynamic *do-not-parse-values* false)
@@ -157,7 +158,11 @@
                                          (reset! css-map (css->clj text))))
                           :placeholder "Paste CSS here"}]
        [icons/icon :icons/forward]
-       [react/text-input {:style {:flex 1 :height 200 :border-color :gray :border-width 1}
+       [react/text-input {:style     {:flex 1 :height 200 :border-color :gray :border-width 1}
                           :multiline true :textAlignVertical :top
-                          :editable false
-                          :value (str @css-map)}]])))
+                          :editable  false
+                          :value     (str (into {}
+                                                (map #(if (and (second %) (string? (second %)))
+                                                        {(first %) (status-colors/check-color (second %))}
+                                                        %)
+                                                     @css-map)))}]])))

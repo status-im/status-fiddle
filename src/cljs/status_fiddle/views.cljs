@@ -11,27 +11,32 @@
             [status-fiddle.status-colors :as status-colors]
             [status-fiddle.status-icons :as status-icons]
             [status-im.ui.components.styles :as styles]
+            [status-im.ui.components.colors :as colors]
             [status-fiddle.svg :as svg]
             [status-fiddle.css :as css]
-            [status-fiddle.cheatsheet :as cheatsheet]))
+            [status-fiddle.cheatsheet :as cheatsheet]
+            [status-fiddle.toolbar :as toolbar]))
 
 (defn code-mirror []
   (reagent/create-class
     {:reagent-render      (fn []
                             [:div#code-pane])
      :component-did-mount (fn [_]
-                            (let [cm (js/CodeMirror (.getElementById js/document "code-pane"))]
+                            (let [cm (js/CodeMirror (.getElementById js/document "code-pane"))
+                                  debounce (atom nil)]
                               (re-frame/dispatch [:set-cm cm])
                               (.init js/parinferCodeMirror cm)
                               (.setValue cm @(re-frame/subscribe [:get :source]))
-                              (.on cm "change" #(re-frame/dispatch [:update-source (.getValue cm)]))))}))
+                              (.on cm "change" (fn [_]
+                                                 (when @debounce (js/clearTimeout @debounce))
+                                                 (reset! debounce (js/setTimeout #(re-frame/dispatch [:update-source (.getValue cm)]) 400))))))}))
 
 (defn valid-hiccup? [vec]
   (let [first-element (nth vec 0 nil)]
     (cond
       (not (vector? vec)) false
       (not (pos? (count vec))) false
-      (string? first-element) false
+      (or (vector? first-element) (string? first-element)) false
       (not (reagent.impl.template/valid-tag? first-element)) false
       (not (every? true? (map valid-hiccup? (filter vector? vec)))) false
       :else true)))
@@ -51,7 +56,9 @@
                                       [cljs.platform :as platform]
                                       [status-fiddle.react-native-web :as react]
                                       [status-fiddle.icons :as icons]
-                                      [status-im.ui.components.styles :as styles]))"
+                                      [status-im.ui.components.styles :as styles]
+                                      [status-im.ui.components.colors :as colors]
+                                      [status-fiddle.toolbar :as toolbar]))"
                                  (or (not-empty cljs-string)
                                      "[:div]"))
                                'dummy-symbol
