@@ -118,6 +118,7 @@
                   (re-frame/dispatch [:switch-device device]))}
    (map
      (fn [device]
+       ^{:key (:id device)}
        [:option {:value (:id device)} (:phone-name device)])
      devices/devices)])
 
