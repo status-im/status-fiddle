@@ -13,7 +13,7 @@
 
   :min-lein-version "2.5.3"
 
-  :source-paths ["src/clj"]
+  :source-paths ["components/src" "src/clj"]
 
   :clean-targets ^{:protect false} ["resources/public/js/compiled" "target"]
 
@@ -35,10 +35,9 @@
    :prod
    {:cljsbuild {:builds {:app {:compiler {:optimizations :whitespace
                                           :pretty-print  false}}}}}}
-
   :cljsbuild
   {:builds
-   {:app {:source-paths ["src/cljs"]
+   {:app {:source-paths ["components/src" "src/cljs"]
           :compiler     {:main         status-fiddle.core
                          :output-to    "resources/public/js/compiled/app.js"
                          :foreign-libs [{:file     "resources/public/js/bundle.js"

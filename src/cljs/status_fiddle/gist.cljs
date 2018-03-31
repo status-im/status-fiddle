@@ -1,9 +1,9 @@
 (ns status-fiddle.gist
-  (:require [ajax.core :as ajax :refer [GET POST]]
+  (:require [ajax.core :refer [GET POST]]
             [cemerick.url :as url]
             [re-frame.core :as re-frame]))
 
-(defn load [id]
+(defn load [id handler]
   "Finds a gist by id, swaps it into atom's :text key,
    and calls callback when it's given."
   (GET (str "https://api.github.com/gists/" id)
@@ -14,10 +14,10 @@
                                         vals
                                         (keep (fn [x] (get x "content")))
                                         first)]
-                               (re-frame/dispatch [:load-source response-text])))}))
+                               (handler response-text)))}))
 
 (defn set-url [url]
-  (re-frame/dispatch [:set-url url])
+  (re-frame/dispatch [:set :url url])
   (set! (.-location js/window) url))
 
 (defn current-url []
@@ -29,8 +29,8 @@
         anchor-str (url/map->query anchor-map)]
     (assoc url :anchor anchor-str)))
 
-(defn get-anchor [key]
-  (-> (current-url) :anchor url/query->map (get (name key))))
+(defn get-anchor []
+  (-> (current-url) :anchor url/query->map (get "gist")))
 
 (defn save [string]
   "Saves a gist, and changes url to url#gist={id}

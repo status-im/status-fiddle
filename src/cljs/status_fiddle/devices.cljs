@@ -1,4 +1,4 @@
-(ns status-fiddle.supported-devices)
+(ns status-fiddle.devices)
 
 (def devices
    [{:id 0 :phone-name "iPhone 6" :screen-width 375 :screen-height 667 :os "ios"}

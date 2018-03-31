@@ -1,10 +1,9 @@
-(ns status-fiddle.css
-  (:require [hickory.core :as hickory]
-            [status-fiddle.react-native-web :as react]
-            [status-fiddle.icons :as icons]
-            [reagent.core :as reagent]
+(ns status-fiddle.ui.panels.css
+  (:require [reagent.core :as reagent]
             [clojure.string :refer [split trim] :as str]
-            [status-fiddle.status-colors :as status-colors]))
+            [status-fiddle.ui.panels.status-colors :as status-colors]
+            [status-im.ui.components.react :as react]
+            [status-im.ui.components.icons.vector-icons :as icons]))
 
 ;; TODO: Perhaps make configurable or passed in as options to relevant fns
 (def ^:dynamic *do-not-parse-values* false)
@@ -150,12 +149,12 @@
   (let [css-map (reagent/atom "")]
     (fn []
       [react/view {:style {:flex-direction :row :align-items :center :margin-vertical 20}}
-       [react/text-input {:style {:flex 1 :height 200 :border-color :gray :border-width 1}
-                          :multiline true :textAlignVertical :top
-                          :on-change (fn [e]
-                                       (let [native-event (.-nativeEvent e)
-                                             text         (.-text native-event)]
-                                         (reset! css-map (css->clj text))))
+       [react/text-input {:style       {:flex 1 :height 200 :border-color :gray :border-width 1}
+                          :multiline   true :textAlignVertical :top
+                          :on-change   (fn [e]
+                                        (let [native-event (.-nativeEvent e)
+                                              text         (.-text native-event)]
+                                          (reset! css-map (css->clj text))))
                           :placeholder "Paste CSS here"}]
        [icons/icon :icons/forward]
        [react/text-input {:style     {:flex 1 :height 200 :border-color :gray :border-width 1}

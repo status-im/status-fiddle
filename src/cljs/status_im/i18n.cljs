@@ -6,4 +6,4 @@
    (name path)))
 
 (defn get-contact-translated [contact-id key fallback]
-  "")
+  fallback)

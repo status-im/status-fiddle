@@ -1,13 +1,10 @@
-(ns status-fiddle.utils
+(ns status-im.ui.components.svg
   (:require [clojure.string :as string]
             [hickory.core :as hickory]))
 
-;;TODO this is the copy of status-im.utils.slurp.slurp-svg, but a little bit modifyed,
-;;TODO because we need svg as html tags structure
+(def svg-tags #{:svg :g :rect :path :use :defs :circle})
 
-(def svg-tags #{:g :rect :path :use :defs})
-
-(defmacro slurp-web-svg [file]
+(defmacro slurp-svg [file]
   (let [svg (-> (clojure.core/slurp file)
                 (string/replace #"[\n]\s*" ""))
         svg-hiccup (hickory/as-hiccup (first (hickory/parse-fragment svg)))

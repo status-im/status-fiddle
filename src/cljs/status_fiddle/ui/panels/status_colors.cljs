@@ -1,9 +1,9 @@
-(ns status-fiddle.status-colors
+(ns status-fiddle.ui.panels.status-colors
   (:require-macros [status-im.utils.views :refer [defview letsubs]])
-  (:require [status-fiddle.react-native-web :as react]
-            [status-im.ui.components.styles :as styles]
+  (:require [status-im.ui.components.styles :as styles]
             [re-frame.core :as re-frame]
-            [status-im.ui.components.colors :as colors]))
+            [status-im.ui.components.colors :as colors]
+            [status-im.ui.components.react :as react]))
 
 (defn color-panel [color label]
   [react/touchable-highlight {:on-press #(re-frame/dispatch [:show-color color label])}
@@ -32,20 +32,14 @@
 
 (def style-ns-colors
   {"styles/color-blue" styles/color-blue
-   "styles/color-blue2" styles/color-blue2
-   "styles/color-blue3" styles/color-blue3
    "styles/color-blue4" styles/color-blue4
-   "styles/color-blue4-faded" styles/color-blue4-faded
    "styles/color-blue4-transparent" styles/color-blue4-transparent
    "styles/color-blue6" styles/color-blue6
    "styles/color-blue-transparent" styles/color-blue-transparent
    "styles/color-black" styles/color-black
    "styles/color-purple" styles/color-purple
-   "styles/color-gray-transparent-light" styles/color-gray-transparent-light
-   "styles/color-gray-transparent-medium-light" styles/color-gray-transparent-medium-light
    "styles/color-gray-transparent" styles/color-gray-transparent
    "styles/color-gray4-transparent" styles/color-gray4-transparent
-   "styles/color-gray10-transparent" styles/color-gray10-transparent
    "styles/color-gray" styles/color-gray
    "styles/color-gray2" styles/color-gray2
    "styles/color-gray3" styles/color-gray3
@@ -54,43 +48,25 @@
    "styles/color-gray6" styles/color-gray6
    "styles/color-gray7" styles/color-gray7
    "styles/color-gray9" styles/color-gray9
-   "styles/color-gray10" styles/color-gray10
-   "styles/color-gray11" styles/color-gray11
    "styles/color-dark" styles/color-dark
-   "styles/color-steel" styles/color-steel
    "styles/color-white" styles/color-white
    "styles/color-white-transparent" styles/color-white-transparent
    "styles/color-white-transparent-1" styles/color-white-transparent-1
-   "styles/color-white-transparent-2" styles/color-white-transparent-2
    "styles/color-white-transparent-3" styles/color-white-transparent-3
    "styles/color-white-transparent-4" styles/color-white-transparent-4
    "styles/color-white-transparent-5" styles/color-white-transparent-5
-   "styles/color-white-transparent-6" styles/color-white-transparent-6
    "styles/color-light-blue" styles/color-light-blue
    "styles/color-light-blue-transparent" styles/color-light-blue-transparent
-   "styles/color-light-blue6" styles/color-light-blue6
-   "styles/color-dark-blue-1" styles/color-dark-blue-1
    "styles/color-dark-blue-2" styles/color-dark-blue-2
-   "styles/color-dark-blue-3" styles/color-dark-blue-3
-   "styles/color-dark-blue-4" styles/color-dark-blue-4
    "styles/color-light-gray" styles/color-light-gray
-   "styles/color-light-gray2" styles/color-light-gray2
    "styles/color-light-gray3" styles/color-light-gray3
-   "styles/color-light-gray4" styles/color-light-gray4
-   "styles/color-light-gray5" styles/color-light-gray5
    "styles/color-red" styles/color-red
    "styles/color-red-2" styles/color-red-2
-   "styles/color-red-3" styles/color-red-3
-   "styles/color-red-4" styles/color-red-4
    "styles/color-light-red" styles/color-light-red
-   "styles/color-green-1" styles/color-green-1
-   "styles/color-green-2" styles/color-green-2
    "styles/color-green-3" styles/color-green-3
    "styles/color-green-3-light" styles/color-green-3-light
    "styles/color-green-4" styles/color-green-4
-   "styles/color-cyan" styles/color-cyan
    "styles/color-separator" styles/color-separator
-   "styles/selected-message-color" styles/selected-message-color
    "styles/separator-color" styles/separator-color})
 
 (defn colors-panel []

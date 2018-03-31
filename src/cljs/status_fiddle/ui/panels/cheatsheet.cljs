@@ -1,5 +1,5 @@
-(ns status-fiddle.cheatsheet
-  (:require [status-fiddle.react-native-web :as react]))
+(ns status-fiddle.ui.panels.cheatsheet
+  (:require [status-im.ui.components.react :as react]))
 
 (def ch-str
   "# Choose the main axis | :flex-direction | :column or :row

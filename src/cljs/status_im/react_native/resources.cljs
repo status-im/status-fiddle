@@ -1,17 +1,5 @@
 (ns status-im.react-native.resources)
 
-(def add-icon        nil)
-(def att             nil)
-(def chat-icon       nil)
-(def icon-close-gray nil)
-(def logo-icon       nil)
-(def nav-back-icon   nil)
-(def user-no-photo   nil)
-(def online-icon     nil)
-(def play            nil)
-(def trash-icon      nil)
-(def v               nil)
-
 (def contacts
   {:auction-house      nil
    :mkr-market         nil
@@ -26,11 +14,15 @@
    :augur              nil
    :ethlance           nil
    :commiteth          nil
-   :etherplay          nil})
+   :etherplay          nil
+   :ethcro             nil})
 
 (def assets
   {:ethereum nil})
 
 (def ui
-  {:empty-hashtags nil
-   :empty-recent   nil})
+  {:empty-hashtags  nil
+   :empty-recent    nil
+   :analytics-image nil
+   :welcome-image   nil
+   :lock            nil})
