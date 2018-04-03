@@ -24,7 +24,8 @@
    {:dependencies [[binaryage/devtools "0.9.4"]
                    [re-frisk "0.5.3"]]
     :plugins      [[lein-figwheel "0.5.13"]]
-    :cljsbuild    {:builds {:app {:figwheel {:on-jsload "status-fiddle.core/mount-root"}
+    :cljsbuild    {:builds {:app {:source-paths ["components/src" "src/cljs" "src/dev"]
+                                  :figwheel {:on-jsload "status-fiddle.core/mount-root"}
                                   :compiler {:main                 status-fiddle.core
                                              :output-dir           "resources/public/js/compiled/out"
                                              :asset-path           "js/compiled/out"
@@ -33,12 +34,12 @@
                                                                     re-frisk.preload]
                                              :external-config      {:devtools/config {:features-to-install :all}}}}}}}
    :prod
-   {:cljsbuild {:builds {:app {:compiler {:optimizations :whitespace
-                                          :pretty-print  false}}}}}}
+   {:cljsbuild {:builds {:app {:source-paths ["components/src" "src/cljs" "src/prod"]
+                               :compiler {:optimizations   :whitespace
+                                          :pretty-print    false}}}}}}
   :cljsbuild
   {:builds
-   {:app {:source-paths ["components/src" "src/cljs"]
-          :compiler     {:main         status-fiddle.core
+   {:app {:compiler     {:main         status-fiddle.core
                          :output-to    "resources/public/js/compiled/app.js"
                          :foreign-libs [{:file     "resources/public/js/bundle.js"
                                          :provides ["cljsjs.react" "cljsjs.react.dom" "webpack.bundle"]}]}}}}

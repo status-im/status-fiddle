@@ -131,12 +131,7 @@
 
 (defn show-access-error [o])
 
-(defn show-image-picker [images-fn]
-  (let [image-picker (.-default image-picker-class)]
-    (-> image-picker
-        (.openPicker (clj->js {:multiple false}))
-        (.then images-fn)
-        (.catch show-access-error))))
+(defn show-image-picker [images-fn])
 
 ;; Clipboard
 
