@@ -19,7 +19,7 @@ html, body {
   height: 100%;
 }
 
-#device-dom-target,#component-dom-target{
+#device-dom-target,#component-dom-target,#screen-dom-target{
  flex: 1;
  display: flex;
 }

@@ -53,6 +53,12 @@
                   [:compile-and-render :component-dom-target]]}))
 
 (re-frame/reg-event-fx
+ :update-and-compile-screen
+ (fn [_ [_ source]]
+   {:dispatch-n [[:update-source :screen-dom-target source]
+                 [:compile-and-render :screen-dom-target]]}))
+
+(re-frame/reg-event-fx
   :update-source
   (fn [{db :db} [_ target-div new-text]]
     (let [cm (get-in db [:cm target-div])]
@@ -100,5 +106,5 @@
         (do
           (reagent/render-component compiled-hic dom-target)
           {:dispatch-n [[:save-source source target]
-                        [:set :error nil]]})
-        {:dispatch [:set :error "Hiccup expression is invalid"]}))))
+                        [:set-in [:error target] nil]]})
+        {:dispatch [:set-in [:error target] "Hiccup expression is invalid"]}))))

@@ -22,8 +22,12 @@
   [react/view {:margin-top 5}
    [button label #(re-frame/dispatch [:update-and-compile-component spurce]) true]])
 
-(defview error-view []
-         (letsubs [error [:get :error]]
+(defn screen-button [label spurce]
+  [react/view {:margin-top 5}
+   [button label #(re-frame/dispatch [:update-and-compile-screen spurce]) true]])
+
+(defview error-view [target]
+         (letsubs [error [:get-in [:error target]]]
                   [react/text {:style {:color :red}} error]))
 
 (defn device-chooser []

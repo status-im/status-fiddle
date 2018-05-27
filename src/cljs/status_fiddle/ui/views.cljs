@@ -8,13 +8,15 @@
             [status-im.ui.components.react :as react]
             [status-fiddle.ui.code-mirror.views :as code-mirror]
             [status-fiddle.ui.components.views :as ui]
-            [status-fiddle.ui.panels.components :as panels.components]))
+            [status-fiddle.ui.panels.components :as panels.components]
+            [status-fiddle.ui.panels.screens :as panels.screens]))
 
 (defview buttons []
   (letsubs [url [:get :url]
-            {:keys [colors icons svg css help components]} [:get :forms]]
+            {:keys [colors icons svg css help components screens]} [:get :forms]]
     [react/view {:style {:flex-direction :row}}
      [ui/switch-button "Components" :components components]
+     [ui/switch-button "Screens" :screens screens]
      [ui/switch-button "Colors" :colors colors]
      [ui/switch-button "Icons" :icons  icons]
      [ui/switch-button "SVG" :svg svg]
@@ -55,7 +57,8 @@
      ;code editor
      [react/view {:style {:flex 1}}
       [code-mirror/code-mirror :device-code-mirror :device-dom-target]
-      [panels.components/components-panel]]]
+      [panels.components/components-panel]
+      [panels.screens/screens-panel]]]
     [react/view {:style {:margin-left 20}}
      [react/view {:style {:margin-bottom 2}}
       ;device chooser
@@ -63,4 +66,4 @@
      ;device
      [device-dom-target]
      ;compile error
-     [ui/error-view]]]])
+     [ui/error-view :device-dom-target]]]])

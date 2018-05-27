@@ -12,4 +12,5 @@
                    :svg        false
                    :css        false
                    :help       false
-                   :components false}})
+                   :components false
+                   :screens    false}})

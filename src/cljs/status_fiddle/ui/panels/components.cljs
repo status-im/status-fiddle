@@ -27,4 +27,4 @@
                 [react/view {:style {:width        300 :height 300
                                      :border-width 1 :border-color :gray}}
                  [:div#component-dom-target]]
-                [ui/error-view]]]])))
+                [ui/error-view :component-dom-target]]]])))
