@@ -4,7 +4,8 @@
             [status-im.react-native.js-dependencies :as js-dependencies]
             [status-im.utils.platform :as platform]
             [status-im.i18n :as i18n]
-            [status-im.ui.components.styles :as styles]))
+            [status-im.ui.components.styles :as styles]
+            [status-im.ui.components.colors :as colors]))
 
 (defn adapt-class [class]
   (when class
@@ -53,13 +54,19 @@
                    :or   {font :default}} text]
   (let [font (get-in platform/platform-specific [:fonts (keyword font)])]
     [text-input-class (merge
-                        {:underline-color-android :transparent
-                         :placeholder-text-color  styles/text2-color
-                         :placeholder             (i18n/label :t/type-a-message)
-                         :value                   text}
-                        (-> opts
-                            (dissoc :font)
-                            (assoc :style (merge style font))))]))
+                       {:underline-color-android :transparent
+                        :placeholder-text-color  colors/text-gray
+                        :placeholder             (i18n/label :t/type-a-message)
+                        :value                   text}
+                       (-> opts
+                           (dissoc :font)
+                           (assoc :style (merge style font))))]))
+
+(defn i18n-text
+  [{:keys [style key]}]
+  (let [default-style {:letter-spacing -0.2
+                       :font-size      14}]
+    [text {:style (merge default-style style)} (i18n/label key)]))
 
 ;;;;; ============= status-react =============================
 
@@ -102,7 +109,7 @@
 
 (def pan-responder (.-PanResponder js-dependencies/react-native))
 (def animated (.-Animated js-dependencies/react-native))
-(def animated-view (reagent/adapt-react-class (.-View animated)))
+(def animated-view view)
 (def animated-text (reagent/adapt-react-class (.-Text animated)))
 
 (def dimensions (.-Dimensions js-dependencies/react-native))

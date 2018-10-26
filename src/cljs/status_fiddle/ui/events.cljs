@@ -98,10 +98,10 @@
 
 (re-frame/reg-event-fx
   :compile-and-render
-  (fn [{{:keys [os source]} :db} [_ target event-source]]
+  (fn [{{:keys [os source forms]} :db} [_ target event-source]]
     (let [source (or event-source (get source target))
           dom-target (.getElementById js/document (name target))
-          compiled-hic (when dom-target (compiler/compile os source))]
+          compiled-hic (when dom-target (compiler/compile os source (:extensions forms)))]
       (if (and compiled-hic (utils/valid-hiccup? compiled-hic))
         (do
           (reagent/render-component compiled-hic dom-target)

@@ -1,6 +1,5 @@
 (ns status-im.ui.screens.main-tabs.styles
-  (:require [status-im.ui.components.styles :as styles]
-            [status-im.utils.platform :as platform])
+  (:require [status-im.utils.platform :as platform])
   (:require-macros [status-im.utils.styles :refer [defnstyle]]))
 
 (def tabs-height (if platform/ios? 52 56))
@@ -8,10 +7,7 @@
 
 (def tabs-container
   {:flex-direction   :row
-   :height           tabs-height
-   :background-color styles/color-white
-   :border-top-width 1
-   :border-top-color styles/color-light-gray3})
+   :height           tabs-height})
 
 (def tab-container
   {:height          tabs-height
@@ -21,13 +17,10 @@
 (defnstyle tab-title [active?]
   {:ios        {:font-size 11}
    :android    {:font-size 12}
-   :text-align :center
-   :color      (if active?
-                 styles/color-blue4
-                 styles/color-gray4)})
+   :text-align :center})
 
 (defn tab-icon [active?]
-  {:color (if active? styles/color-blue4 styles/color-gray4)})
+  {})
 
 (def counter-container
   {:position :absolute
@@ -35,3 +28,16 @@
 
 (def counter
   {:margin-left 18})
+
+(def unread-messages-icon
+  {:position         :absolute
+   :width            20
+   :height           20
+   :border-radius    20
+   :left             18
+   :top              10
+   :justify-content  :center
+   :align-items      :center})
+
+(defn unread-messages-text [large?]
+  {:font-size (if large? 10 10.9)})

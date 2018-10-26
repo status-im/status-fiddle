@@ -21,6 +21,8 @@
 
 (defn cheatsheet []
   [react/view {:style {:margin-vertical 20 :border-width 1 :border-color :gray :padding 20}}
+   [:a {:href "https://www.youtube.com/watch?v=jvzrxkDZfyk" :target "_blank"} "Video tutorial"]
+   [react/view {:style {:height 20}}]
    [react/text {:style {:font-family "COURIER" :margin-bottom 10}}
     ch-str]
    [:a {:href "https://github.com/vhpoet/react-native-styling-cheat-sheet" :target "_blank"} "more"]])

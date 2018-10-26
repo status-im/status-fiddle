@@ -83,3 +83,6 @@
 
 (defn estimate-gas [symbol]
     default-transaction-gas)
+
+(defn sidechain? [id]
+  false)

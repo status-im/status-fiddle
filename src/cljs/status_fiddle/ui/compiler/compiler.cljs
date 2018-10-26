@@ -15,9 +15,10 @@
             [status-im.ui.components.text-input.view :as text-input]
             [status-im.ui.components.chat-icon.screen :as chat-icon.screen]
             [status-im.ui.components.common.common :as components.common]
-            [status-im.ui.components.contact.contact :as contact]))
+            [status-im.ui.components.contact.contact :as contact]
+            [status-fiddle.ui.compiler.extensions :as extensions]))
 
-(defn get-code-to-compile [os cljs-string]
+(defn get-code-to-compile [os cljs-string extensions?]
   (str
     "(ns cljs.platform)
      (def platform \"" os "\")
@@ -41,12 +42,15 @@
          [status-im.ui.components.contact.contact :as contact]
          [status-im.ui.components.styles :as styles]
          [status-im.ui.components.colors :as colors]))"
-    (or (not-empty cljs-string)
-        "[:div]")))
 
-(defn compile [os cljs-string]
+    (if extensions?
+      (extensions/extensions-code cljs-string)
+      (or (not-empty cljs-string)
+          "[:div]"))))
+
+(defn compile [os cljs-string extensions?]
   (eval-str (empty-state)
-            (get-code-to-compile os cljs-string)
+            (get-code-to-compile os cljs-string extensions?)
             'dummy-symbol
             {:ns            'cljs.user
              :eval          js-eval

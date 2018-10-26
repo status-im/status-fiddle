@@ -3,15 +3,13 @@
   (:require [status-im.ui.components.styles :as component.styles]))
 
 (defn toolbar []
-  {:background-color component.styles/color-white})
+  {})
 
 (def chat-separator-item
-  {:border-bottom-width 1
-   :border-bottom-color component.styles/color-gray5})
+  {:border-bottom-width 1})
 
 (defstyle chat-container
   {:flex-direction   :row
-   :background-color component.styles/color-white
    :android          {:height 76}
    :ios              {:height 74}
    :overflow         "hidden"})
@@ -59,8 +57,7 @@
    :margin-right   4})
 
 (def name-text
-  {:color     component.styles/text1-color
-   :font-size 16})
+  {:font-size 16})
 
 (defstyle private-group-icon-container
   {:width        16
@@ -88,8 +85,7 @@
   {:flex-shrink 1})
 
 (defstyle last-message-text
-  {:color   component.styles/text4-color
-   :android {:font-size 14
+  {:android {:font-size 14
              :height    24}
    :ios     {:font-size 15
              :height    24}})
@@ -106,8 +102,7 @@
    :height       16})
 
 (defstyle datetime-text
-  {:color   component.styles/text4-color
-   :android {:font-size 14}
+  {:android {:font-size 14}
    :ios     {:font-size 15}})
 
 (def new-messages-container
@@ -115,13 +110,11 @@
    :height             22
    :padding-horizontal 8
    :margin-left        15
-   :background-color   component.styles/new-messages-count-color
    :border-radius      50})
 
 (defstyle new-messages-text
   {:left       0
    :fontSize   12
-   :color      component.styles/color-blue
    :text-align :center
    :android    {:top 2}
    :ios        {:top 3}})
@@ -130,9 +123,7 @@
   {:flex 1})
 
 (defstyle list-container
-  {:android {:background-color component.styles/color-light-gray}
-
-   :ios     {:background-color component.styles/color-white}})
+  {})
 
 (def toolbar-actions
   {:flex-direction :row
@@ -147,8 +138,7 @@
 
 (def create-icon
   {:fontSize 20
-   :height   22
-   :color    component.styles/color-white})
+   :height   22})
 
 (def group-icon
   {:margin-top   8

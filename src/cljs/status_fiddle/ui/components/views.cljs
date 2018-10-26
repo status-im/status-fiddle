@@ -2,14 +2,14 @@
   (:require-macros [status-im.utils.views :refer [defview letsubs]])
   (:require [status-im.ui.components.react :as react]
             [re-frame.core :as re-frame]
-            [status-im.ui.components.styles :as styles]
-            [status-fiddle.devices :as devices]))
+            [status-fiddle.devices :as devices]
+            [status-im.ui.components.colors :as colors]))
 
 (defn button [label on-press active?]
   [react/touchable-highlight {:on-press on-press}
    [react/view {:style {:background-color (if (or (nil? active?) active?)
-                                            styles/color-light-blue
-                                            styles/color-gray)
+                                            colors/blue
+                                            colors/gray)
                         :border-radius    4 :padding-horizontal 10 :padding-vertical 2
                         :margin-bottom    2 :margin-left 10}}
     [react/text {:style {:color :white :font-size 11}}

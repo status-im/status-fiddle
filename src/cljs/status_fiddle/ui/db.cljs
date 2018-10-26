@@ -13,4 +13,5 @@
                    :css        false
                    :help       false
                    :components false
-                   :screens    false}})
+                   :screens    false
+                   :extensions false}})
