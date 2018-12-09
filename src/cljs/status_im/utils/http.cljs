@@ -58,3 +58,6 @@
 
 (defn normalize-url [url]
   (str (when (and url (not (re-find #"^[a-zA-Z-_]+:/" url))) "http://") url))
+
+(defn url-sanitized? [uri]
+  (not (nil? (re-find #"^(https:)([/|.|\w|\s|-])*\.(?:jpg|svg|png)$" uri))))

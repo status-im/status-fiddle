@@ -1,12 +1,13 @@
 (defproject status-fiddle "0.1.0-SNAPSHOT"
-  :dependencies [[org.clojure/clojure "1.8.0"]
-                 [org.clojure/clojurescript "1.9.908"]
+  :dependencies [[org.clojure/clojure "1.9.0"]
+                 [org.clojure/clojurescript "1.10.238"]
                  [alandipert/storage-atom "2.0.1"]
                  [cljs-ajax "0.5.8"]
                  [com.cemerick/url "0.1.1"]
                  [reagent "0.7.0" :exclusions [cljsjs/react cljsjs/react-dom]]
                  [hickory "0.7.1"]
                  [com.taoensso/timbre "4.10.0"]
+                 [status-im/pluto "iteration-4-5"]
                  [re-frame "0.10.2"]]
 
   :plugins [[lein-cljsbuild "1.1.5"]]

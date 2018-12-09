@@ -16,19 +16,26 @@
      label]]])
 
 (defn switch-button [label id active?]
-  [button label #(re-frame/dispatch [:set-in [:forms id] (not active?)]) (not active?)])
+  [button
+   label
+   #(do
+      (re-frame/dispatch [:set-in [:forms id] (not active?)])
+      (when (= id :extensions)
+        (re-frame/dispatch [:compile-and-render :device-dom-target])))
+   (not active?)])
 
-(defn comp-button [label spurce]
+(defn comp-button [label source]
   [react/view {:margin-top 5}
-   [button label #(re-frame/dispatch [:update-and-compile-component spurce]) true]])
+   [button label #(re-frame/dispatch [:update-and-compile-component source]) true]])
 
-(defn screen-button [label spurce]
+(defn screen-button [label source]
   [react/view {:margin-top 5}
-   [button label #(re-frame/dispatch [:update-and-compile-screen spurce]) true]])
+   [button label #(re-frame/dispatch [:update-and-compile-screen source]) true]])
 
 (defview error-view [target]
-         (letsubs [error [:get-in [:error target]]]
-                  [react/text {:style {:color :red}} error]))
+  (letsubs [error [:get-in [:error target]]]
+    [react/view {:style {:width 350}}
+     [react/text {:style {:color :red :flex-wrap :wrap}} error]]))
 
 (defn device-chooser []
   [:select

@@ -9,4 +9,3 @@
 (defn save-to-local-storage [source]
   (when source
     (swap! sources assoc :source source)))
-

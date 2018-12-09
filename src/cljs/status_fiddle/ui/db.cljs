@@ -1,4 +1,8 @@
-(ns status-fiddle.ui.db)
+(ns status-fiddle.ui.db
+  (:require [cemerick.url :as url]))
+
+(defn current-url []
+  (url/url (-> js/window .-location .-href)))
 
 (def default-db
   {:phone-name    "iPhone 6"
@@ -14,4 +18,4 @@
                    :help       false
                    :components false
                    :screens    false
-                   :extensions false}})
+                   :extensions (boolean (-> (current-url) :anchor url/query->map (get "ext")))}})

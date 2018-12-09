@@ -18,7 +18,7 @@
             [status-im.ui.components.contact.contact :as contact]
             [status-fiddle.ui.compiler.extensions :as extensions]))
 
-(defn get-code-to-compile [os cljs-string extensions?]
+(defn get-code-to-compile [os cljs-string]
   (str
     "(ns cljs.platform)
      (def platform \"" os "\")
@@ -43,14 +43,12 @@
          [status-im.ui.components.styles :as styles]
          [status-im.ui.components.colors :as colors]))"
 
-    (if extensions?
-      (extensions/extensions-code cljs-string)
-      (or (not-empty cljs-string)
-          "[:div]"))))
+    (or (not-empty cljs-string)
+        "[:div]")))
 
-(defn compile [os cljs-string extensions?]
+(defn compile [os cljs-string]
   (eval-str (empty-state)
-            (get-code-to-compile os cljs-string extensions?)
+            (get-code-to-compile os cljs-string)
             'dummy-symbol
             {:ns            'cljs.user
              :eval          js-eval

@@ -7,7 +7,7 @@
             [status-fiddle.ui.views :as views]))
 
 (set! js/window.onerror
-      #(re-frame/dispatch [:set :error %1]))
+      #(println %1))
 
 (enable-console-print!)
 

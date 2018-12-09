@@ -7,7 +7,9 @@
             [status-fiddle.utils :as utils]
             [reagent.core :as reagent]
             [status-fiddle.local-storage :as ls]
-            [status-fiddle.templates :as templates]))
+            [status-fiddle.templates :as templates]
+            [status-fiddle.ui.compiler.extensions :as extensions]
+            [pluto.reader.hooks :as hooks]))
 
 ;; HELPERS
 
@@ -100,11 +102,21 @@
   :compile-and-render
   (fn [{{:keys [os source forms]} :db} [_ target event-source]]
     (let [source (or event-source (get source target))
-          dom-target (.getElementById js/document (name target))
-          compiled-hic (when dom-target (compiler/compile os source (:extensions forms)))]
-      (if (and compiled-hic (utils/valid-hiccup? compiled-hic))
-        (do
-          (reagent/render-component compiled-hic dom-target)
-          {:dispatch-n [[:save-source source target]
-                        [:set-in [:error target] nil]]})
-        {:dispatch [:set-in [:error target] "Hiccup expression is invalid"]}))))
+          dom-target (.getElementById js/document (name target))]
+      {:dispatch-n
+       [[:save-source source target]
+        (if (:extensions forms)
+          (let [readed (extensions/read source)
+                errors (:errors readed)]
+            (if errors
+              [:set-in [:error target] (:pluto.reader.errors/message (first errors))]
+              (let [{:keys [parsed hook-ref]} (first (vals (first (vals (get-in (extensions/parse (:data readed)) [:data :hooks])))))]
+                (do
+                  (reagent/render-component (hooks/hook-in (:hook hook-ref) nil nil parsed nil) dom-target)
+                  [:set-in [:error target] nil]))))
+          (let [compiled-hic (when dom-target (compiler/compile os source))]
+            (if (and compiled-hic (utils/valid-hiccup? compiled-hic))
+              (do
+                (reagent/render-component compiled-hic dom-target)
+                [:set-in [:error target] nil])
+              [:set-in [:error target] "Hiccup expression is invalid"])))]})))
