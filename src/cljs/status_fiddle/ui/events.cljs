@@ -114,9 +114,10 @@
                 (do
                   (reagent/render-component (hooks/hook-in (:hook hook-ref) nil nil parsed nil) dom-target)
                   [:set-in [:error target] nil]))))
-          (let [compiled-hic (when dom-target (compiler/compile os source))]
-            (if (and compiled-hic (utils/valid-hiccup? compiled-hic))
-              (do
-                (reagent/render-component compiled-hic dom-target)
-                [:set-in [:error target] nil])
-              [:set-in [:error target] "Hiccup expression is invalid"])))]})))
+          (when dom-target
+            (compiler/compile os source
+              #(if (and % (utils/valid-hiccup? %))
+                 (do
+                   (reagent/render-component % dom-target)
+                   (re-frame/dispatch [:set-in [:error target] nil]))
+                 (re-frame/dispatch [:set-in [:error target] "Hiccup expression is invalid"])))))]})))

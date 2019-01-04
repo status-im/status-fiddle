@@ -15,8 +15,7 @@
             [status-im.ui.components.text-input.view :as text-input]
             [status-im.ui.components.chat-icon.screen :as chat-icon.screen]
             [status-im.ui.components.common.common :as components.common]
-            [status-im.ui.components.contact.contact :as contact]
-            [status-fiddle.ui.compiler.extensions :as extensions]))
+            [status-im.ui.components.contact.contact :as contact]))
 
 (defn get-code-to-compile [os cljs-string]
   (str
@@ -26,7 +25,7 @@
     "(def ios? " (= os "ios") ")"
 
     "(ns cljs.user
-  (:require [reagent.core :as reagent]
+      (:require [reagent.core :as reagent]
          [cljs.platform :as platform]
          [status-im.i18n :as i18n]
          [status-im.ui.components.icons.vector-icons :as icons]
@@ -46,7 +45,7 @@
     (or (not-empty cljs-string)
         "[:div]")))
 
-(defn compile [os cljs-string]
+(defn compile [os cljs-string on-result]
   (eval-str (empty-state)
             (get-code-to-compile os cljs-string)
             'dummy-symbol
@@ -60,5 +59,6 @@
               (if error
                 (do
                   (def *er x)
-                  (js/console.error "Error: " (str error)))
-                value))))
+                  (js/console.error "Error: " (str error))
+                  (on-result nil))
+                (on-result value)))))

@@ -1,7 +1,6 @@
 (ns status-fiddle.templates
   (:require-macros [status-im.utils.slurp :refer [slurp]]))
 
-(def default)
 (def button (slurp "resources/templates/button.cljs"))
 (def button2 (slurp "resources/templates/button2.cljs"))
 (def input (slurp "resources/templates/input.cljs"))
@@ -13,3 +12,5 @@
 
 (def screens-intro (slurp "resources/templates/screens/intro.cljs"))
 (def screens-profile (slurp "resources/templates/screens/profile.cljs"))
+
+(def default (slurp "resources/templates/default.cljs"))
