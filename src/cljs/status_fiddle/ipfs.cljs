@@ -4,13 +4,14 @@
             [status-fiddle.utils :as utils]))
 
 (defn set-url [url]
-  (set! (.-location js/window) url))
+  (js/history.pushState nil nil url))
 
 (defn save [content extension?]
   "Saves content to ipfs"
   (let [form-data (doto
                    (js/FormData.)
                    (.append "extension.edn" content))]
+    (println "ext" extension?)
     (ajax/POST
       "https://ipfs.infura.io:5001/api/v0/add"
       {:body            form-data
@@ -21,7 +22,7 @@
                           (when Hash
                             (re-frame/dispatch [:set-in [:publish :url] {:extension? extension?
                                                                          :hash Hash}])
-                            (cond-> (utils/current-url)
+                            (cond-> (utils/current-url-without-anchor)
                                     true
                                     (utils/assoc-anchor "ipfs" Hash)
                                     extension?

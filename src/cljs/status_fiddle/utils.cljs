@@ -1,5 +1,6 @@
 (ns status-fiddle.utils
-  (:require [cemerick.url :as url]))
+  (:require [cemerick.url :as url]
+            [clojure.string :as string]))
 
 (defn valid-hiccup? [vec]
   (let [first-element (nth vec 0 nil)]
@@ -13,6 +14,9 @@
 
 (defn current-url []
   (url/url (-> js/window .-location .-href)))
+
+(defn current-url-without-anchor []
+  (url/url (first (string/split (-> js/window .-location .-href) #"#"))))
 
 (defn assoc-anchor [{:keys [anchor] :as url} key value]
   (let [anchor-map (merge (url/query->map anchor)

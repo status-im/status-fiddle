@@ -9,7 +9,6 @@
 (defview publish []
   (letsubs [{:keys [in-progress? url]} [:get :publish]]
     (let [{:keys [extension? hash]} url]
-      (println "url" extension? hash)
       [react/view {:style {:margin-vertical 20 :border-width 1 :border-color :gray :padding 20 :flex-direction :row}}
        (if in-progress?
          [react/activity-indicator {:animating true}]
