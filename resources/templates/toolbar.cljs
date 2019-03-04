@@ -11,6 +11,6 @@
 
  [toolbar/toolbar {} nil
   [toolbar/content-title "With action"]
-  [toolbar/actions [{:icon      :icons/ok
+  [toolbar/actions [{:icon      :main-icons/check
                      :icon-opts {:color :blue}
                      :handler   #(js/alert "Toolbar OK handler")}]]]]

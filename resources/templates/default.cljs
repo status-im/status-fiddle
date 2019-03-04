@@ -5,7 +5,7 @@
  [react/view {:style {:flex 1
                       :align-items :center
                       :justify-content :center}}
-  [icons/icon :icons/profile-active]
+  [icons/icon :main-icons/user-profile]
   [react/text {:style {:font-size 25 :padding 20}}
    "Hello!"]
   [react/text {:style {:padding-horizontal 20}}
