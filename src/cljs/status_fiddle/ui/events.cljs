@@ -3,6 +3,7 @@
             [status-fiddle.ui.db :as db]
             [status-fiddle.local-storage :as local-storage]
             [status-fiddle.gist :as gist]
+            [status-fiddle.ipfs :as ipfs]
             [status-fiddle.ui.compiler.compiler :as compiler]
             [status-fiddle.utils :as utils]
             [reagent.core :as reagent]
@@ -42,9 +43,12 @@
 (re-frame/reg-event-fx
   :load-code
   (fn [_ _]
-    (let [gist-id (gist/get-anchor)]
-      (if gist-id
-        (gist/load gist-id update-source-and-compile)
+    (let [gist-id (utils/get-anchor "gist")
+          hash (utils/get-anchor "ipfs")]
+      (if (or gist-id hash)
+        (if gist-id
+          (gist/load gist-id update-source-and-compile)
+          (ipfs/load hash update-source-and-compile))
         (update-source-and-compile (or (ls/get-source) templates/default)))
       nil)))
 
@@ -85,10 +89,10 @@
     (assoc db :icon icon)))
 
 (re-frame/reg-event-fx
-  :share-source-on-gist
-  (fn [{db :db}]
-    (gist/save (:source db))
-    {:db (assoc db :url "Uploading on gist...")}))
+ :publish-source-to-ipfs
+ (fn [{{:keys [source forms] :as db} :db}]
+   (ipfs/save (:device-dom-target source) (:extensions forms))
+   {:db (assoc db :publish {:in-progress? true})}))
 
 (re-frame/reg-event-fx
   :switch-device
@@ -105,14 +109,18 @@
           dom-target (.getElementById js/document (name target))]
       {:dispatch-n
        [[:save-source source target]
+        (when (= :device-dom-target target)
+          [:set :publish nil])
         (if (:extensions forms)
           (let [readed (extensions/read source)
                 errors (:errors readed)]
             (if errors
               [:set-in [:error target] (:pluto.reader.errors/message (first errors))]
-              (let [{:keys [parsed hook-ref]} (first (vals (first (vals (get-in (extensions/parse (:data readed)) [:data :hooks])))))]
+              (let [parsed-ext (extensions/parse (:data readed))
+                    first-in-hook (first (vals (get-in parsed-ext [:data :hooks])))
+                    {:keys [parsed hook-ref]} (first (vals first-in-hook))]
                 (do
-                  (reagent/render-component (hooks/hook-in (:hook hook-ref) nil nil parsed nil) dom-target)
+                  (reagent/render-component (hooks/hook-in (:hook hook-ref) (first (keys first-in-hook)) nil parsed nil) dom-target)
                   [:set-in [:error target] nil]))))
           (when dom-target
             (compiler/compile os source

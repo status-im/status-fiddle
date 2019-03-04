@@ -19,6 +19,7 @@
 (def qr-code                #js {})
 (def random-bytes           #js {})
 (def desktop-menu           #js {})
+(def desktop-shortcuts           #js {})
 
 (def react-native
   #js {:NativeModules      #js {}

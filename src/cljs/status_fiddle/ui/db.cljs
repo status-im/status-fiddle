@@ -11,6 +11,8 @@
    :source        {}
    :cm            {}
    :os            "ios"
+   :extension-props {}
+   :publish {}
    :forms         {:colors     false
                    :icons      false
                    :svg        false
@@ -18,4 +20,5 @@
                    :help       false
                    :components false
                    :screens    false
-                   :extensions (boolean (-> (current-url) :anchor url/query->map (get "ext")))}})
+                   :extensions (boolean (-> (current-url) :anchor url/query->map (get "ext")))
+                   :publish    false}})

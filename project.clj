@@ -7,7 +7,7 @@
                  [reagent "0.7.0" :exclusions [cljsjs/react cljsjs/react-dom]]
                  [hickory "0.7.1"]
                  [com.taoensso/timbre "4.10.0"]
-                 [status-im/pluto "iteration-4-5"]
+                 [status-im/pluto "iteration-4-7"]
                  [re-frame "0.10.2"]]
 
   :plugins [[lein-cljsbuild "1.1.5"]]

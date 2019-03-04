@@ -5,6 +5,7 @@
             [status-fiddle.ui.panels.svg :as panels.svg]
             [status-fiddle.ui.panels.css :as css]
             [status-fiddle.ui.panels.cheatsheet :as cheatsheet]
+            [status-fiddle.ui.panels.publish :as publish]
             [status-im.ui.components.react :as react]
             [status-fiddle.ui.code-mirror.views :as code-mirror]
             [status-fiddle.ui.components.views :as ui]
@@ -13,8 +14,7 @@
             [status-im.ui.components.colors :as colors]))
 
 (defview buttons []
-  (letsubs [url [:get :url]
-            {:keys [colors icons svg css help components screens extensions]} [:get :forms]]
+  (letsubs [{:keys [colors icons svg css help components screens extensions publish]} [:get :forms]]
     [react/view {:style {:flex-direction :row}}
      [ui/switch-button "Extensions" :extensions extensions]
      [react/text {:style {:margin-left 10}} "|"]
@@ -27,19 +27,19 @@
      [ui/switch-button "Screens" :screens screens]
      [react/text {:style {:margin-left 10}} "|"]
      [ui/switch-button "Help" :help help]
+     [react/text {:style {:margin-left 10}} "|"]
+     [ui/switch-button "Publish" :publish publish]
      [react/view {:style {:flex 1}}]]))
-     ;TODO they closed anonymous gists :(
-     ;[react/text url]
-     ;[ui/button "Share" #(re-frame/dispatch [:share-source-on-gist])]]))
 
 (defview panels []
-  (letsubs [{:keys [colors icons svg css help]} [:get :forms]]
+  (letsubs [{:keys [colors icons svg css help publish]} [:get :forms]]
     [react/view
      (when colors [status-colors/colors-panel])
      (when icons [status-icons/icons-panel])
      (when svg [panels.svg/svg])
      (when css [css/css])
-     (when help [cheatsheet/cheatsheet])]))
+     (when help [cheatsheet/cheatsheet])
+     (when publish [publish/publish])]))
 
 (defview device-dom-target []
   (letsubs [screen-width [:get :screen-width]

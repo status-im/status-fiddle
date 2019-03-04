@@ -7,10 +7,9 @@
             [status-im.ui.components.list.views :as list]
             [status-im.ui.components.checkbox.view :as checkbox]
             [status-im.ui.components.icons.vector-icons :as icons]
-            [pluto.reader.hooks :as hooks]
             [clojure.string :as string]
-            [status-im.ui.components.toolbar.view :as toolbar]
-            [status-im.ui.components.toolbar.actions :as actions]))
+            [status-fiddle.ui.compiler.hooks :as hooks]
+            [ajax.core :as ajax]))
 
 (re-frame/reg-event-fx
  :extensions/identity-event
@@ -83,7 +82,7 @@
 
 (re-frame/reg-sub
  :store/get
- (fn [db [_ {id :id} {:keys [key]}]]
+ (fn [db [_ {id :hook-id} {:keys [key]}]]
    (get-in db [:extensions/store id key])))
 
 (defn- empty-value? [o]
@@ -98,7 +97,7 @@
 
 (re-frame/reg-event-fx
  :store/put
- (fn [{:keys [db]} [_ {id :id} {:keys [key value]}]]
+ (fn [{:keys [db]} [_ {id :hook-id} {:keys [key value]}]]
    {:db (put-or-dissoc db id key value)}))
 
 (re-frame/reg-event-fx
@@ -148,19 +147,18 @@
  (fn [_ [_ _ {:keys [value]}]]
    {::json-stringify value}))
 
-(defn- parse-result [o on-success]
-  (let [res (if (json? o) (update o :body parse-json) o)]
-    (on-success res)))
+(defn- parse-result [result on-success]
+  (let [res (try (parse-json result) (catch js/Error _))]
+    (on-success {:body (or res result)})))
 
 (re-frame/reg-event-fx
  :http/get
  (fn [_ [_ _ {:keys [url on-success on-failure timeout]}]]
-   nil #_{:http-raw-get (merge {:url url
-                                :success-event-creator #(parse-result % on-success)}
-                               (when on-failure
-                                 {:failure-event-creator on-failure})
-                               (when timeout
-                                 {:timeout-ms timeout}))}))
+   (ajax/GET url {:with-credentials? false
+                  :response-format :text
+                  :handler #(when on-success (re-frame/dispatch (parse-result (str %) on-success)))
+                  :error-handler on-failure})
+   nil))
 
 (re-frame/reg-event-fx
  :ipfs/cat
@@ -226,8 +224,9 @@
 (re-frame/reg-event-fx
  :extensions.chat.command/set-parameter-with-custom-params
  (fn [{{:keys [current-chat-id] :as db} :db} [_ _ {:keys [value params]}]]
-   nil #_{:db (update-in db [:chats current-chat-id :custom-params] merge params)
-          :dispatch [:chat.ui/set-command-parameter value]}))
+   {:db (-> db
+            (update-in  [:extension-props :params] merge params)
+            (assoc-in  [:extension-props :suggestion-id] nil))}))
 
 (re-frame/reg-event-fx
  :extensions.chat.command/send-plain-text-message
@@ -294,7 +293,10 @@
    uri])
 
 (defn flat-list [{:keys [key data item-view]}]
-  [list/flat-list {:data data :key-fn (or key (fn [_ i] (str i))) :render-fn item-view}])
+  [react/scroll-view
+   (for [item data]
+     [item-view item])])
+;[list/flat-list {:data data :key-fn (or key (fn [_ i] (str i))) :render-fn item-view}])
 
 (defn checkbox [{:keys [on-change checked]}]
   [react/view {:style {:background-color colors/white}}
@@ -322,36 +324,26 @@
 (defn- wrap-view-child [child]
   (if (vector? child) child [text {} child]))
 
-(defn view [o & children]
+(defn abstract-view [type o & children]
   (if (map? o)
-    (into [react/view o] (map wrap-view-child children))
-    (into [react/view {} (wrap-view-child o)] (map wrap-view-child children))))
+    (into [type o] (map wrap-view-child children))
+    (into [type {} (wrap-view-child o)] (map wrap-view-child children))))
+
+(defn view [o & children]
+  (apply abstract-view react/view o children))
+
+(defn scroll-view [o & children]
+  (apply abstract-view react/scroll-view o children))
 
 (defn icon [o]
   [icons/icon (:key o) o])
 
 (defn component [])
 
-(def settings-hook
-  "Hook for extensions"
-  {:properties
-   {:label     :string
-    :view      :view
-    :on-click? :event}
-   :hook
-   (reify hooks/Hook
-     (hook-in [_ id env {:keys [label view on-click]} {:keys [db]}]
-       [react/view {:style {:flex 1}}
-        [toolbar/toolbar {:background-color colors/blue}
-         [toolbar/nav-button (actions/back-white #())]
-         [toolbar/content-title {:color :white :font-weight :bold} label]]
-        [view]])
-     (unhook [_ id env _ {:keys [db]}]
-       nil))})
-
 (def capacities
   {:components {'view               {:value view}
                 'text               {:value text}
+                'scroll-view        {:value scroll-view :properties {:horizontal :boolean :keyboard-should-persist-taps :keyword :content-container-style :map}}
                 'touchable-opacity  {:value touchable-opacity :properties {:on-press :event}}
                 'icon               {:value icon :properties {:key :keyword :color :keyword}}
                 'image              {:value image :properties {:uri :string}}
@@ -513,44 +505,11 @@
                                :params?   :vector
                                :outputs?  :vector
                                :on-result :event}}}
-   :hooks      {:wallet.settings settings-hook}})
+   :hooks      {:wallet.settings hooks/settings-hook
+                :chat.command    hooks/command-hook}})
 
 (defn read [code-string]
   (reader/read code-string))
 
 (defn parse [data]
   (reader/parse {:capacities capacities} data))
-
-;; TODO will be helpgul for comamnd extension
-(defn extensions-code [content]
-  (str
-    "(def view react/view)
-    (def text react/text) "
-
-    "(defn message-container [outgoing]
-      (let [properties {:outgoing outgoing}]
-        [react/view
-         [react/view {:style {:flex-direction (if outgoing :row-reverse :row)
-                              :width          230
-                              :align-self     (if outgoing :flex-end :flex-start)
-                              :align-items    (if outgoing :flex-end :flex-start)}}
-          [react/view {:style {:flex-direction :column
-                               :width          230
-                               :padding-left   8
-                               :padding-right  8
-                               :align-items    (if outgoing :flex-end :flex-start)}}
-           [react/view {:style {:flex-direction (if outgoing :row-reverse :row)}}
-            [react/view {:style {:margin-top         4
-                                 :flex               1
-                                 :padding-vertical   6
-                                 :padding-horizontal 12
-                                 :border-radius      8
-                                 :padding-top        12
-                                 :padding-bottom     10
-                                 :background-color   (if outgoing colors/blue colors/white)}}
-
-             " content "]]]]]))
-
-      [react/view {:style {:flex 1 :background-color colors/gray-lighter}}
-       [message-container false]
-       [message-container true]]"))

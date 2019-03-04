@@ -20,6 +20,9 @@
 (def touchable-highlight (get-web-class "TouchableOpacity"))
 (def scroll-view (get-web-class "ScrollView"))
 (def text-input-class (get-web-class "TextInput"))
+(def activity-indicator (get-web-class "ActivityIndicator"))
+
+(def qr-code (adapt-class js/QRCode))
 
 (defn view [& props]
   (into []
@@ -103,7 +106,6 @@
 
 (def touchable-highlight-class (get-class "TouchableHighlight"))
 (def touchable-opacity (get-class "TouchableOpacity"))
-(def activity-indicator (get-class "ActivityIndicator"))
 
 (def modal (get-class "Modal"))
 

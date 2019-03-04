@@ -84,3 +84,5 @@
   (if (every? map? maps)
     (apply merge-with deep-merge maps)
     (last maps)))
+
+(defn set-timeout [cb ms])
